@@ -123,7 +123,7 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
       >
         <div className="flex flex-col h-full">
           <div className="p-4 border-b border-white/10">
-            <div className="text-xl font-bold text-white">Cardo</div>
+            <div className="text-xl font-bold text-white">Internsat</div>
             <div className="text-sm text-white/60 capitalize">{role} Portal</div>
           </div>
 

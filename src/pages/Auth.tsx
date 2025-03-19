@@ -18,7 +18,7 @@ const Auth = () => {
       <div className="absolute inset-0 bg-accent/5 backdrop-blur-3xl"></div>
       <div className="max-w-md w-full relative z-10">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome to Cardo</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome to Internsat</h1>
           <p className="text-white/60">Access your account or create a new one</p>
         </div>
         
