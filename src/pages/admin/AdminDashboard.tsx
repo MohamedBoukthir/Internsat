@@ -65,16 +65,14 @@ const AdminDashboard = () => {
                 Manage Users
               </Button>
               <Button 
-                variant="outline" 
-                className="border-white/20"
+                className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
                 onClick={() => navigate("/admin/internships")}
               >
                 <Briefcase className="mr-2 h-4 w-4" />
                 Manage Internships
               </Button>
               <Button 
-                variant="outline" 
-                className="border-white/20"
+                className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
               >
                 <ShieldCheck className="mr-2 h-4 w-4" />
                 Security Settings
@@ -92,7 +90,7 @@ const AdminDashboard = () => {
                   <p className="text-lg text-white/60">{stat.label}</p>
                   <p className="text-3xl font-bold text-white">{stat.value}</p>
                 </div>
-                <div className="bg-white/10 rounded-full p-3">
+                <div className="bg-white rounded-full p-3">
                   {stat.icon}
                 </div>
               </CardContent>

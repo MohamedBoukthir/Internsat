@@ -118,7 +118,7 @@ const FaceCapture = ({ onCapture, isVerifying }: FaceCaptureProps) => {
             <Button 
               onClick={takePhoto} 
               disabled={!isReady} 
-              className="w-full"
+              className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
             >
               <Camera className="mr-2 h-4 w-4" />
               {isReady ? "Capture" : "Initializing Camera..."}

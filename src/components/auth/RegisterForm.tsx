@@ -145,7 +145,7 @@ const RegisterForm = () => {
             <p className="text-xs text-white/60">Admin accounts can only be created by existing admins</p>
           </div>
           
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
             Next: Capture Face
           </Button>
         </form>
@@ -159,7 +159,6 @@ const RegisterForm = () => {
           </div>
           <FaceCapture onCapture={handleCapture} isVerifying={false} />
           <Button 
-            variant="outline" 
             className="w-full mt-4"
             onClick={() => setStep(1)}
           >
@@ -189,12 +188,11 @@ const RegisterForm = () => {
             <Button 
               onClick={handleRegister} 
               disabled={isLoading}
-              className="w-full"
+              className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
             >
               {isLoading ? "Creating Account..." : "Complete Registration"}
             </Button>
             <Button 
-              variant="outline" 
               onClick={restartCapture}
               disabled={isLoading}
               className="w-full"

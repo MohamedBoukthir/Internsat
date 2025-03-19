@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -6,26 +5,46 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, User, KeyRound } from "lucide-react";
+import { Camera, KeyRound } from "lucide-react";
 import FaceCapture from "@/components/auth/FaceCapture";
 
 const LoginForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [loginMethod, setLoginMethod] = useState("credentials");
+  const [step, setStep] = useState(1); // Step 1: Credentials, Step 2: Face Capture
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [faceData, setFaceData] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  
-  const handleCredentialLogin = async (e: React.FormEvent) => {
+
+  // Handle credential submission
+  const handleCredentialSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setStep(2); // Move to face capture step
+  };
+
+  // Handle face capture
+  const handleFaceCapture = (imageData: string) => {
+    setFaceData(imageData);
+    setStep(3); // Move to final submission step
+  };
+
+  // Handle final login submission
+  const handleLogin = async () => {
+    if (!faceData) {
+      toast({
+        variant: "destructive",
+        title: "Face capture required",
+        description: "Please capture your face to proceed.",
+      });
+      return;
+    }
+
     setIsLoading(true);
-    
     try {
-      // Simulate authentication
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Simulate authentication (send credentials + face data to server)
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       // For demo purposes, hardcoded roles
       if (email.includes("admin")) {
         navigate("/admin/dashboard");
@@ -34,7 +53,7 @@ const LoginForm = () => {
       } else {
         navigate("/student/dashboard");
       }
-      
+
       toast({
         title: "Login successful",
         description: "Welcome back!",
@@ -49,89 +68,92 @@ const LoginForm = () => {
       setIsLoading(false);
     }
   };
-  
-  const handleFaceLogin = async (faceData: string) => {
-    setIsLoading(true);
-    
-    try {
-      // In a real app, would send face data to server for verification
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // For demo purposes, always succeed and redirect to student dashboard
-      navigate("/student/dashboard");
-      
-      toast({
-        title: "Face recognition successful",
-        description: "Welcome back!",
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Face recognition failed",
-        description: "We couldn't verify your identity. Please try again or use credentials.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
+
   return (
     <div>
-      <Tabs value={loginMethod} onValueChange={setLoginMethod}>
-        <TabsList className="grid grid-cols-2 mb-6 bg-background/20">
-          <TabsTrigger value="credentials" className="flex items-center gap-2">
-            <KeyRound className="h-4 w-4" />
-            <span>Credentials</span>
-          </TabsTrigger>
-          <TabsTrigger value="face" className="flex items-center gap-2">
-            <Camera className="h-4 w-4" />
-            <span>Face ID</span>
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="credentials">
-          <form onSubmit={handleCredentialLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+      {step === 1 && (
+        <form onSubmit={handleCredentialSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Password</Label>
+              <a href="#" className="text-sm text-primary hover:underline">
+                Forgot password?
+              </a>
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <a href="#" className="text-sm text-primary hover:underline">
-                  Forgot password?
-                </a>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Logging in..." : "Login"}
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <Button type="submit" className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
+            Next: Capture Face
+          </Button>
+        </form>
+      )}
+
+      {step === 2 && (
+        <Card className="p-4 border border-white/10 bg-background/20">
+          <div className="text-center mb-4">
+            <h3 className="text-lg font-medium text-white">Capture Your Face</h3>
+            <p className="text-white/80">Center your face in the frame and take a photo</p>
+          </div>
+          <FaceCapture onCapture={handleFaceCapture} isVerifying={false} />
+          <Button
+            className="w-full mt-4"
+            onClick={() => setStep(1)} // Go back to credentials step
+          >
+            Back to Credentials
+          </Button>
+        </Card>
+      )}
+
+      {step === 3 && faceData && (
+        <Card className="p-4 border border-white/10 bg-background/20">
+          <div className="text-center mb-4">
+            <h3 className="text-lg font-medium text-white">Confirm Login</h3>
+            <p className="text-white/80">Your face has been captured successfully</p>
+          </div>
+
+          <div className="flex justify-center mb-4">
+            <img
+              src={faceData}
+              alt="Captured face"
+              className="w-32 h-32 object-cover rounded-full border-2 border-white/20"
+            />
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Button
+              onClick={handleLogin}
+              disabled={isLoading}
+              className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
+            >
+              {isLoading ? "Logging in..." : "Complete Login"}
             </Button>
-          </form>
-        </TabsContent>
-        
-        <TabsContent value="face">
-          <Card className="p-4 border border-white/10 bg-background/20">
-            <div className="text-center mb-4">
-              <p className="text-white/80">Look at the camera to verify your identity</p>
-            </div>
-            <FaceCapture onCapture={handleFaceLogin} isVerifying={isLoading} />
-          </Card>
-        </TabsContent>
-      </Tabs>
+            <Button
+              onClick={() => setStep(2)} // Retake photo
+              disabled={isLoading}
+              className="w-full"
+            >
+              Retake Photo
+            </Button>
+          </div>
+        </Card>
+      )}
     </div>
   );
 };

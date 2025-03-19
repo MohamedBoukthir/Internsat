@@ -71,8 +71,7 @@ const HRDashboard = () => {
                 Post New Internship
               </Button>
               <Button 
-                variant="outline" 
-                className="border-white/20"
+                className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
                 onClick={() => navigate("/hr/applications")}
               >
                 <Users className="mr-2 h-4 w-4" />
@@ -91,7 +90,7 @@ const HRDashboard = () => {
                   <p className="text-lg text-white/60">{stat.label}</p>
                   <p className="text-3xl font-bold text-white">{stat.value}</p>
                 </div>
-                <div className="bg-white/10 rounded-full p-3">
+                <div className="bg-white rounded-full p-3">
                   {stat.icon}
                 </div>
               </CardContent>
@@ -120,7 +119,7 @@ const HRDashboard = () => {
                       </div>
                       <div className="flex items-center gap-3">
                         {getStatusIcon(applicant.status)}
-                        <Button variant="outline" size="sm" className="border-white/20">
+                        <Button size="sm" className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
                           View Details
                         </Button>
                       </div>
