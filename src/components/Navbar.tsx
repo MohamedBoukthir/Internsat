@@ -1,5 +1,7 @@
+
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -14,10 +16,12 @@ const Navbar = () => {
           <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
             Open your account
           </Button>
-          <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
-            Sign in
-            <LogIn className="w-4 h-4 ml-2" />
-          </Button>
+          <Link to="/auth">
+            <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
+              Sign in
+              <LogIn className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
         </div>
       </div>
     </nav>

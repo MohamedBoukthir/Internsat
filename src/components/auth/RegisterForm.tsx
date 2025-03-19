@@ -1,0 +1,211 @@
+
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select"
+import { Camera, User, CheckCircle, XCircle } from "lucide-react";
+import FaceCapture from "@/components/auth/FaceCapture";
+
+const RegisterForm = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [step, setStep] = useState(1);
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    role: "student",
+  });
+  const [faceData, setFaceData] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleRoleChange = (value: string) => {
+    setUserData(prev => ({ ...prev, role: value }));
+  };
+  
+  const handleNext = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep(2);
+  };
+  
+  const handleCapture = (imageData: string) => {
+    setFaceData(imageData);
+    setStep(3);
+  };
+  
+  const handleRegister = async () => {
+    if (!faceData) return;
+    
+    setIsLoading(true);
+    try {
+      // In a real app, would send user data and face data to server
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      toast({
+        title: "Registration successful",
+        description: "Your account has been created successfully.",
+      });
+      
+      // Redirect to login tab
+      navigate("/auth", { state: { tab: "login" } });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Registration failed",
+        description: "Something went wrong. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const restartCapture = () => {
+    setFaceData(null);
+    setStep(2);
+  };
+  
+  return (
+    <div>
+      {step === 1 && (
+        <form onSubmit={handleNext} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                name="firstName"
+                value={userData.firstName}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                value={userData.lastName}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              value={userData.email}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              value={userData.password}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="role">Role</Label>
+            <Select value={userData.role} onValueChange={handleRoleChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="hr">HR Manager</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-white/60">Admin accounts can only be created by existing admins</p>
+          </div>
+          
+          <Button type="submit" className="w-full">
+            Next: Capture Face
+          </Button>
+        </form>
+      )}
+      
+      {step === 2 && (
+        <Card className="p-4 border border-white/10 bg-background/20">
+          <div className="text-center mb-4">
+            <h3 className="text-lg font-medium text-white">Capture Your Face</h3>
+            <p className="text-white/80">Center your face in the frame and take a photo</p>
+          </div>
+          <FaceCapture onCapture={handleCapture} isVerifying={false} />
+          <Button 
+            variant="outline" 
+            className="w-full mt-4"
+            onClick={() => setStep(1)}
+          >
+            Back to Details
+          </Button>
+        </Card>
+      )}
+      
+      {step === 3 && faceData && (
+        <Card className="p-4 border border-white/10 bg-background/20">
+          <div className="text-center mb-4">
+            <h3 className="text-lg font-medium text-white">Confirm Registration</h3>
+            <p className="text-white/80">Your face has been captured successfully</p>
+          </div>
+          
+          <div className="flex justify-center mb-4">
+            {faceData && (
+              <img 
+                src={faceData} 
+                alt="Captured face" 
+                className="w-32 h-32 object-cover rounded-full border-2 border-white/20" 
+              />
+            )}
+          </div>
+          
+          <div className="flex flex-col gap-3">
+            <Button 
+              onClick={handleRegister} 
+              disabled={isLoading}
+              className="w-full"
+            >
+              {isLoading ? "Creating Account..." : "Complete Registration"}
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={restartCapture}
+              disabled={isLoading}
+              className="w-full"
+            >
+              Retake Photo
+            </Button>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+export default RegisterForm;
