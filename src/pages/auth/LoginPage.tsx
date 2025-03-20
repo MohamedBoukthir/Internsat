@@ -6,7 +6,7 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden px-4">
-      <div className="absolute inset-0 bg-accent/5 backdrop-blur-3xl"></div>
+      <div className="absolute inset-0 backdrop-blur-3xl"></div>
       <div className="max-w-md w-full relative z-10">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Welcome to Internsat</h1>
