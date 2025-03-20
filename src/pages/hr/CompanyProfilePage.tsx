@@ -47,10 +47,10 @@ const CompanyProfilePage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="glass-effect lg:col-span-1">
+          <Card className="glass-effect border-white/10 lg:col-span-1">
             <CardHeader>
               <CardTitle className="text-white">Company Overview</CardTitle>
-              <CardDescription>Your company's public profile</CardDescription>
+              <CardDescription className="text-white/60">Your company's public profile</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex justify-center">
@@ -63,7 +63,7 @@ const CompanyProfilePage = () => {
                   <Button 
                     variant="ghost" 
                     size="sm"
-                    className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs py-1"
+                    className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs py-1 hover:bg-black/70"
                   >
                     Change Logo
                   </Button>
@@ -95,89 +95,95 @@ const CompanyProfilePage = () => {
             </CardContent>
           </Card>
 
-          <Card className="glass-effect lg:col-span-2">
+          <Card className="glass-effect border-white/10 lg:col-span-2">
             <CardHeader>
               <CardTitle className="text-white">Edit Company Information</CardTitle>
-              <CardDescription>Update your company's details</CardDescription>
+              <CardDescription className="text-white/60">Update your company's details</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Company Name</Label>
+                    <Label htmlFor="name" className="text-white">Company Name</Label>
                     <Input
                       id="name"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
+                      className="bg-white/5 border-white/10 text-white"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="website">Website</Label>
+                    <Label htmlFor="website" className="text-white">Website</Label>
                     <Input
                       id="website"
                       name="website"
                       value={formData.website}
                       onChange={handleChange}
+                      className="bg-white/5 border-white/10 text-white"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="location">Location</Label>
+                    <Label htmlFor="location" className="text-white">Location</Label>
                     <Input
                       id="location"
                       name="location"
                       value={formData.location}
                       onChange={handleChange}
+                      className="bg-white/5 border-white/10 text-white"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="industry">Industry</Label>
+                    <Label htmlFor="industry" className="text-white">Industry</Label>
                     <Input
                       id="industry"
                       name="industry"
                       value={formData.industry}
                       onChange={handleChange}
+                      className="bg-white/5 border-white/10 text-white"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="size">Company Size</Label>
+                    <Label htmlFor="size" className="text-white">Company Size</Label>
                     <Input
                       id="size"
                       name="size"
                       value={formData.size}
                       onChange={handleChange}
+                      className="bg-white/5 border-white/10 text-white"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="founded">Founded Year</Label>
+                    <Label htmlFor="founded" className="text-white">Founded Year</Label>
                     <Input
                       id="founded"
                       name="founded"
                       value={formData.founded}
                       onChange={handleChange}
+                      className="bg-white/5 border-white/10 text-white"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="about">About Company</Label>
+                  <Label htmlFor="about" className="text-white">About Company</Label>
                   <Textarea
                     id="about"
                     name="about"
                     value={formData.about}
                     onChange={handleChange}
-                    className="min-h-[150px]"
+                    className="min-h-[150px] bg-white/5 border-white/10 text-white"
                     required
                   />
                 </div>

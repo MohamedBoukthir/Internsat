@@ -55,48 +55,50 @@ const PostInternshipPage = () => {
           <p className="text-lg text-white/60 mt-2">Create a new internship opportunity for students</p>
         </div>
 
-        <Card className="glass-effect">
+        <Card className="glass-effect border-white/10">
           <CardHeader>
             <CardTitle className="text-white">Internship Details</CardTitle>
-            <CardDescription>Fill in the details of the internship position</CardDescription>
+            <CardDescription className="text-white/60">Fill in the details of the internship position</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="title">Position Title</Label>
+                  <Label htmlFor="title" className="text-white">Position Title</Label>
                   <Input
                     id="title"
                     name="title"
                     placeholder="e.g. Frontend Developer Intern"
                     value={formData.title}
                     onChange={handleChange}
+                    className="bg-white/5 border-white/10 text-white"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="location">Location</Label>
+                  <Label htmlFor="location" className="text-white">Location</Label>
                   <Input
                     id="location"
                     name="location"
                     placeholder="e.g. New York, NY or Remote"
                     value={formData.location}
                     onChange={handleChange}
+                    className="bg-white/5 border-white/10 text-white"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="type">Internship Type</Label>
+                  <Label htmlFor="type" className="text-white">Internship Type</Label>
                   <Select
                     value={formData.type}
                     onValueChange={(value) => handleSelectChange("type", value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white/5 border-white/10 text-white">
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-background border-white/10">
                       <SelectItem value="full-time">Full-time</SelectItem>
                       <SelectItem value="part-time">Part-time</SelectItem>
                       <SelectItem value="remote">Remote</SelectItem>
@@ -106,52 +108,54 @@ const PostInternshipPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="duration">Duration</Label>
+                  <Label htmlFor="duration" className="text-white">Duration</Label>
                   <Input
                     id="duration"
                     name="duration"
                     placeholder="e.g. 3 months"
                     value={formData.duration}
                     onChange={handleChange}
+                    className="bg-white/5 border-white/10 text-white"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="stipend">Stipend/Compensation</Label>
+                  <Label htmlFor="stipend" className="text-white">Stipend/Compensation</Label>
                   <Input
                     id="stipend"
                     name="stipend"
                     placeholder="e.g. $1000/month or Unpaid"
                     value={formData.stipend}
                     onChange={handleChange}
+                    className="bg-white/5 border-white/10 text-white"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description" className="text-white">Description</Label>
                 <Textarea
                   id="description"
                   name="description"
                   placeholder="Describe the internship role, responsibilities, and what the intern will be working on"
                   value={formData.description}
                   onChange={handleChange}
-                  className="min-h-[100px]"
+                  className="min-h-[100px] bg-white/5 border-white/10 text-white"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="requirements">Requirements</Label>
+                <Label htmlFor="requirements" className="text-white">Requirements</Label>
                 <Textarea
                   id="requirements"
                   name="requirements"
                   placeholder="List the skills, qualifications, or experience required for this internship"
                   value={formData.requirements}
                   onChange={handleChange}
-                  className="min-h-[100px]"
+                  className="min-h-[100px] bg-white/5 border-white/10 text-white"
                   required
                 />
               </div>
@@ -161,6 +165,7 @@ const PostInternshipPage = () => {
                   type="button"
                   variant="ghost"
                   onClick={() => navigate("/hr/dashboard")}
+                  className="text-white hover:bg-white/10"
                 >
                   Cancel
                 </Button>
