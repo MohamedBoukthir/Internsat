@@ -1,8 +1,30 @@
-import { MapPin } from "lucide-react";
+import { useState } from "react";
+import { 
+  AlertCircle, 
+  Building, 
+  Calendar, 
+  CheckCircle, 
+  Clock, 
+  Eye, 
+  FileText, 
+  MapPin, 
+  MessageSquare, 
+  XCircle 
+} from "lucide-react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  Table, 
+  TableHeader, 
+  TableBody, 
+  TableHead, 
+  TableRow, 
+  TableCell 
+} from "@/components/ui/table";
 
 // Mock application data
 const MOCK_APPLICATIONS = [
