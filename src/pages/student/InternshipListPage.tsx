@@ -1,11 +1,14 @@
-
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { Search, MapPin, Briefcase, Clock, Calendar, Building, Filter, Bookmark, BookmarkCheck } from "lucide-react";
+import { Search, MapPin, Briefcase, Clock, Calendar, Building, Filter, Bookmark, BookmarkCheck, Send, X } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 // Mock data for internships
 const MOCK_INTERNSHIPS = [
@@ -85,6 +88,12 @@ const InternshipListPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [internships, setInternships] = useState(MOCK_INTERNSHIPS);
   const [selectedInternship, setSelectedInternship] = useState<number | null>(null);
+  const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
+  const [applicationForm, setApplicationForm] = useState({
+    coverLetter: "",
+    resume: "",
+    phoneNumber: ""
+  });
   
   // Toggle saved state
   const toggleSaved = (id: number) => {
@@ -99,6 +108,35 @@ const InternshipListPage = () => {
     internship.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
     internship.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
+  // Handle application form changes
+  const handleApplicationChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setApplicationForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Submit application
+  const handleApplySubmit = () => {
+    // In a real app, this would send the application to an API
+    console.log("Submitting application for internship ID:", selectedInternship);
+    console.log("Application data:", applicationForm);
+    
+    // Close the dialog
+    setIsApplyDialogOpen(false);
+    
+    // Reset the form
+    setApplicationForm({
+      coverLetter: "",
+      resume: "",
+      phoneNumber: ""
+    });
+    
+    // Show success toast
+    toast({
+      title: "Application Submitted",
+      description: "Your application has been successfully submitted.",
+    });
+  };
   
   return (
     <DashboardLayout role="student">
@@ -286,7 +324,11 @@ const InternshipListPage = () => {
                         </div>
                         
                         <div className="mt-8 flex gap-4">
-                          <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34] flex-1">
+                          <Button 
+                            className="bg-[#F2FF44] text-black hover:bg-[#E2EF34] flex-1"
+                            onClick={() => setIsApplyDialogOpen(true)}
+                          >
+                            <Send className="mr-2 h-4 w-4" />
                             Apply Now
                           </Button>
                           <Button variant="outline" className="text-white border-white/20 hover:bg-white/10">
@@ -312,6 +354,66 @@ const InternshipListPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Application Dialog */}
+      <Dialog open={isApplyDialogOpen} onOpenChange={setIsApplyDialogOpen}>
+        <DialogContent className="bg-background border-white/10">
+          <DialogHeader>
+            <DialogTitle className="text-white">Apply for Internship</DialogTitle>
+            <DialogDescription className="text-white/60">
+              Fill out the application form below to apply for this internship.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="coverLetter" className="text-white">Cover Letter</Label>
+              <Textarea
+                id="coverLetter"
+                name="coverLetter"
+                placeholder="Tell us why you're a good fit for this position..."
+                value={applicationForm.coverLetter}
+                onChange={handleApplicationChange}
+                className="min-h-[150px] bg-white/5 border-white/10 text-white"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="resume" className="text-white">Resume Link</Label>
+              <Input
+                id="resume"
+                name="resume"
+                placeholder="Paste a link to your resume (Google Drive, Dropbox, etc.)"
+                value={applicationForm.resume}
+                onChange={handleApplicationChange}
+                className="bg-white/5 border-white/10 text-white"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber" className="text-white">Phone Number</Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="Your contact phone number"
+                value={applicationForm.phoneNumber}
+                onChange={handleApplicationChange}
+                className="bg-white/5 border-white/10 text-white"
+                required
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsApplyDialogOpen(false)} className="text-white border-white/20 hover:bg-white/10">
+              <X className="mr-2 h-4 w-4" />
+              Cancel
+            </Button>
+            <Button className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]" onClick={handleApplySubmit}>
+              <Send className="mr-2 h-4 w-4" />
+              Submit Application
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };
