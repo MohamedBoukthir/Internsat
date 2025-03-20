@@ -10,6 +10,9 @@ import ProfilePage from "./pages/student/ProfilePage";
 import InternshipListPage from "./pages/student/InternshipListPage";
 import ApplicationsPage from "./pages/student/ApplicationsPage";
 import HRDashboard from "./pages/hr/HRDashboard";
+import PostInternshipPage from "./pages/hr/PostInternshipPage";
+import HRApplicationsPage from "./pages/hr/ApplicationsPage";
+import CompanyProfilePage from "./pages/hr/CompanyProfilePage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import RegisterPage from "./pages/auth/RegisterPage";
 import LoginPage from "./pages/auth/LoginPage";
@@ -36,6 +39,9 @@ const App = () => (
           
           {/* HR routes */}
           <Route path="/hr/dashboard" element={<HRDashboard />} />
+          <Route path="/hr/post" element={<PostInternshipPage />} />
+          <Route path="/hr/applications" element={<HRApplicationsPage />} />
+          <Route path="/hr/company" element={<CompanyProfilePage />} />
           
           {/* Admin routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
