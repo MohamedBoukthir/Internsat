@@ -1,6 +1,6 @@
 
 import { ReactNode, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   LogOut,
@@ -11,7 +11,10 @@ import {
   Users,
   Settings,
   Home,
-  LayoutDashboard
+  LayoutDashboard,
+  FileText,
+  Building,
+  Search
 } from "lucide-react";
 
 interface DashboardLayoutProps {
@@ -22,6 +25,7 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     // In a real app, would clear auth state here
@@ -35,28 +39,33 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
         icon: <LayoutDashboard className="h-5 w-5" />,
         label: "Dashboard",
         path: `/${role}/dashboard`,
-      },
-      {
-        icon: <User className="h-5 w-5" />,
-        label: "Profile",
-        path: `/${role}/profile`,
-      },
+      }
     ];
 
     const studentItems = [
       {
-        icon: <Briefcase className="h-5 w-5" />,
+        icon: <User className="h-5 w-5" />,
+        label: "Profile",
+        path: "/student/profile",
+      },
+      {
+        icon: <Search className="h-5 w-5" />,
         label: "Find Internships",
         path: "/student/internships",
       },
       {
-        icon: <Briefcase className="h-5 w-5" />,
+        icon: <FileText className="h-5 w-5" />,
         label: "My Applications",
         path: "/student/applications",
       },
     ];
 
     const hrItems = [
+      {
+        icon: <User className="h-5 w-5" />,
+        label: "Profile",
+        path: "/hr/profile",
+      },
       {
         icon: <Briefcase className="h-5 w-5" />,
         label: "Post Internship",
@@ -66,6 +75,11 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
         icon: <Users className="h-5 w-5" />,
         label: "Applications",
         path: "/hr/applications",
+      },
+      {
+        icon: <Building className="h-5 w-5" />,
+        label: "Company Profile",
+        path: "/hr/company",
       },
     ];
 
@@ -79,6 +93,11 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
         icon: <Briefcase className="h-5 w-5" />,
         label: "Manage Internships",
         path: "/admin/internships",
+      },
+      {
+        icon: <Building className="h-5 w-5" />,
+        label: "Manage Companies",
+        path: "/admin/companies",
       },
       {
         icon: <Settings className="h-5 w-5" />,
@@ -133,8 +152,15 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
                 <li key={index}>
                   <Button
                     variant="ghost"
-                    className="w-full justify-start text-white/70 hover:text-white hover:bg-white/10"
-                    onClick={() => navigate(item.path)}
+                    className={`w-full justify-start ${
+                      location.pathname === item.path 
+                        ? "bg-white/10 text-white" 
+                        : "text-white/70 hover:text-white hover:bg-white/10"
+                    }`}
+                    onClick={() => {
+                      navigate(item.path);
+                      if (sidebarOpen) setSidebarOpen(false);
+                    }}
                   >
                     {item.icon}
                     <span className="ml-2">{item.label}</span>
