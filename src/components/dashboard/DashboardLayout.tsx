@@ -1,4 +1,3 @@
-
 import { ReactNode, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,6 @@ import {
   User,
   Briefcase,
   Users,
-  Settings,
   Home,
   LayoutDashboard,
   FileText,
@@ -98,11 +96,6 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
         icon: <Building className="h-5 w-5" />,
         label: "Manage Companies",
         path: "/admin/companies",
-      },
-      {
-        icon: <Settings className="h-5 w-5" />,
-        label: "Settings",
-        path: "/admin/settings",
       },
     ];
 

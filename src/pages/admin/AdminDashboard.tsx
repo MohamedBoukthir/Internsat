@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,8 +8,7 @@ import {
   ShieldCheck, 
   AlertTriangle,
   ChevronRight,
-  Building,
-  Settings
+  Building
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -79,13 +77,6 @@ const AdminDashboard = () => {
               >
                 <Building className="mr-2 h-4 w-4" />
                 Manage Companies
-              </Button>
-              <Button 
-                className="bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
-                onClick={() => navigate("/admin/settings")}
-              >
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
               </Button>
             </div>
           </CardContent>
