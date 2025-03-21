@@ -4,19 +4,19 @@ import { MessageSquare } from "lucide-react";
 const Testimonials = () => {
   const testimonials = [
     {
-      quote: "The best banking experience I've ever had. Simple, fast, and secure.",
+      quote: "Internsat helped me land my dream internship at a top tech company. Highly recommended!",
       author: "Sarah Johnson",
-      role: "Business Owner"
+      role: "Software Engineering Intern"
     },
     {
-      quote: "This app has completely transformed how I manage my finances.",
+      quote: "Thanks to Internsat, I gained valuable experience and built connections in my industry.",
       author: "Michael Chen",
-      role: "Software Engineer"
+      role: "Marketing Intern"
     },
     {
-      quote: "Incredible user experience. Everything just works seamlessly.",
+      quote: "The platform made it so easy to find and apply for internships. A game-changer for students!",
       author: "Emma Davis",
-      role: "Financial Analyst"
+      role: "Business Analyst Intern"
     }
   ];
 
@@ -28,7 +28,7 @@ const Testimonials = () => {
           What Our Users Say
         </h2>
         <p className="text-xl text-white/60 text-center mb-12 max-w-2xl mx-auto">
-          Join thousands of satisfied users who have transformed their banking experience
+          Hear from students and professionals who have kickstarted their careers with Internsat.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
@@ -36,7 +36,7 @@ const Testimonials = () => {
               <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-4">
                 <MessageSquare className="w-6 h-6 text-white" />
               </div>
-              <p className="text-white/80 mb-4 italic">{testimonial.quote}</p>
+              <p className="text-white/80 mb-4 italic">"{testimonial.quote}"</p>
               <div className="text-white font-semibold">{testimonial.author}</div>
               <div className="text-white/60 text-sm">{testimonial.role}</div>
             </Card>

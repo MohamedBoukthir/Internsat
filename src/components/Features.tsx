@@ -1,22 +1,22 @@
 import { Card } from "@/components/ui/card";
-import { Wallet, Shield, CreditCard } from "lucide-react";
+import { Briefcase, Globe, Users } from "lucide-react";
 
 const Features = () => {
   const features = [
     {
-      icon: <Wallet className="w-6 h-6 text-white" />,
-      title: "Mobile Banking",
-      description: "Manage your finances on the go with our secure mobile banking platform"
+      icon: <Briefcase className="w-6 h-6 text-white" />,
+      title: "Diverse Opportunities",
+      description: "Explore internships across various industries and roles tailored to your skills."
     },
     {
-      icon: <Shield className="w-6 h-6 text-white" />,
-      title: "Secure Transactions",
-      description: "Bank-grade security for all your transactions and personal data"
+      icon: <Globe className="w-6 h-6 text-white" />,
+      title: "Global Access",
+      description: "Connect with companies and opportunities from around the world."
     },
     {
-      icon: <CreditCard className="w-6 h-6 text-white" />,
-      title: "Digital Cards",
-      description: "Virtual and physical cards with advanced control features"
+      icon: <Users className="w-6 h-6 text-white" />,
+      title: "Community Support",
+      description: "Join a community of interns and mentors to guide your career journey."
     }
   ];
 
@@ -27,10 +27,10 @@ const Features = () => {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <h2 className="text-4xl font-bold text-white">
-              All the experience in the new application
+              Empower Your Internship Journey
             </h2>
             <p className="text-xl text-white/60">
-              Simple transfers, payments for utilities, functional statements, card settings, for which you used to have to go to the branch online-banking
+              Discover internships, connect with global companies, and grow your career with Internsat.
             </p>
           </div>
           <div className="grid gap-6">

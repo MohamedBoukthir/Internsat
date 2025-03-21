@@ -232,7 +232,7 @@ const ApplicationsPage = () => {
                           <div className="flex justify-end gap-3">
                             {application.status !== "rejected" && (
                               <Button
-                                variant="destructive"
+                                className="bg-red-500 hover:bg-red-600"
                                 onClick={() => handleStatusChange(application.id, "rejected")}
                               >
                                 <XCircle className="h-4 w-4 mr-2" />
@@ -250,7 +250,7 @@ const ApplicationsPage = () => {
                             )}
                             {application.status !== "pending" && (
                               <Button
-                                variant="outline"
+                                className="bg-yellow-500 hover:bg-yellow-600"
                                 onClick={() => handleStatusChange(application.id, "pending")}
                               >
                                 <Clock className="h-4 w-4 mr-2" />
