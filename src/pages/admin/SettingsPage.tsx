@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Shield, Bell, Globe, Lock, Mail, Database, Key } from "lucide-react";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 
 const SettingsPage = () => {
   const [emailNotifications, setEmailNotifications] = useState({
@@ -27,6 +28,8 @@ const SettingsPage = () => {
   });
   
   const { toast } = useToast();
+  const generalForm = useForm();
+  const notificationsForm = useForm();
 
   const handleSaveEmailSettings = () => {
     // In a real app, this would call an API to update settings
@@ -92,7 +95,7 @@ const SettingsPage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <Form>
+                <Form {...generalForm}>
                   <div className="space-y-4">
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/10 p-4">
                       <div className="space-y-0.5">
@@ -103,14 +106,12 @@ const SettingsPage = () => {
                           When enabled, only administrators can access the system.
                         </FormDescription>
                       </div>
-                      <FormControl>
-                        <Switch
-                          checked={systemSettings.maintenanceMode}
-                          onCheckedChange={(checked) => 
-                            setSystemSettings({...systemSettings, maintenanceMode: checked})
-                          }
-                        />
-                      </FormControl>
+                      <Switch
+                        checked={systemSettings.maintenanceMode}
+                        onCheckedChange={(checked) => 
+                          setSystemSettings({...systemSettings, maintenanceMode: checked})
+                        }
+                      />
                     </FormItem>
 
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/10 p-4">
@@ -122,14 +123,12 @@ const SettingsPage = () => {
                           Allow new users to register on the platform.
                         </FormDescription>
                       </div>
-                      <FormControl>
-                        <Switch
-                          checked={systemSettings.allowRegistration}
-                          onCheckedChange={(checked) => 
-                            setSystemSettings({...systemSettings, allowRegistration: checked})
-                          }
-                        />
-                      </FormControl>
+                      <Switch
+                        checked={systemSettings.allowRegistration}
+                        onCheckedChange={(checked) => 
+                          setSystemSettings({...systemSettings, allowRegistration: checked})
+                        }
+                      />
                     </FormItem>
 
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/10 p-4">
@@ -141,14 +140,12 @@ const SettingsPage = () => {
                           Automatically approve new internship postings without review.
                         </FormDescription>
                       </div>
-                      <FormControl>
-                        <Switch
-                          checked={systemSettings.autoApproveInternships}
-                          onCheckedChange={(checked) => 
-                            setSystemSettings({...systemSettings, autoApproveInternships: checked})
-                          }
-                        />
-                      </FormControl>
+                      <Switch
+                        checked={systemSettings.autoApproveInternships}
+                        onCheckedChange={(checked) => 
+                          setSystemSettings({...systemSettings, autoApproveInternships: checked})
+                        }
+                      />
                     </FormItem>
 
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/10 p-4">
@@ -160,14 +157,12 @@ const SettingsPage = () => {
                           Require users to verify their email address upon registration.
                         </FormDescription>
                       </div>
-                      <FormControl>
-                        <Switch
-                          checked={systemSettings.requireEmailVerification}
-                          onCheckedChange={(checked) => 
-                            setSystemSettings({...systemSettings, requireEmailVerification: checked})
-                          }
-                        />
-                      </FormControl>
+                      <Switch
+                        checked={systemSettings.requireEmailVerification}
+                        onCheckedChange={(checked) => 
+                          setSystemSettings({...systemSettings, requireEmailVerification: checked})
+                        }
+                      />
                     </FormItem>
 
                     <div className="pt-4">
@@ -199,7 +194,7 @@ const SettingsPage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <Form>
+                <Form {...notificationsForm}>
                   <div className="space-y-4">
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/10 p-4">
                       <div className="space-y-0.5">
@@ -210,14 +205,12 @@ const SettingsPage = () => {
                           Receive notifications when new users register
                         </FormDescription>
                       </div>
-                      <FormControl>
-                        <Switch
-                          checked={emailNotifications.newUsers}
-                          onCheckedChange={(checked) => 
-                            setEmailNotifications({...emailNotifications, newUsers: checked})
-                          }
-                        />
-                      </FormControl>
+                      <Switch
+                        checked={emailNotifications.newUsers}
+                        onCheckedChange={(checked) => 
+                          setEmailNotifications({...emailNotifications, newUsers: checked})
+                        }
+                      />
                     </FormItem>
 
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/10 p-4">
@@ -229,14 +222,12 @@ const SettingsPage = () => {
                           Receive notifications when new internships are posted
                         </FormDescription>
                       </div>
-                      <FormControl>
-                        <Switch
-                          checked={emailNotifications.newInternships}
-                          onCheckedChange={(checked) => 
-                            setEmailNotifications({...emailNotifications, newInternships: checked})
-                          }
-                        />
-                      </FormControl>
+                      <Switch
+                        checked={emailNotifications.newInternships}
+                        onCheckedChange={(checked) => 
+                          setEmailNotifications({...emailNotifications, newInternships: checked})
+                        }
+                      />
                     </FormItem>
 
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/10 p-4">
@@ -248,14 +239,12 @@ const SettingsPage = () => {
                           Receive notifications when users report issues
                         </FormDescription>
                       </div>
-                      <FormControl>
-                        <Switch
-                          checked={emailNotifications.reportedIssues}
-                          onCheckedChange={(checked) => 
-                            setEmailNotifications({...emailNotifications, reportedIssues: checked})
-                          }
-                        />
-                      </FormControl>
+                      <Switch
+                        checked={emailNotifications.reportedIssues}
+                        onCheckedChange={(checked) => 
+                          setEmailNotifications({...emailNotifications, reportedIssues: checked})
+                        }
+                      />
                     </FormItem>
 
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-white/10 p-4">
@@ -267,14 +256,12 @@ const SettingsPage = () => {
                           Receive notifications about system updates and maintenance
                         </FormDescription>
                       </div>
-                      <FormControl>
-                        <Switch
-                          checked={emailNotifications.systemUpdates}
-                          onCheckedChange={(checked) => 
-                            setEmailNotifications({...emailNotifications, systemUpdates: checked})
-                          }
-                        />
-                      </FormControl>
+                      <Switch
+                        checked={emailNotifications.systemUpdates}
+                        onCheckedChange={(checked) => 
+                          setEmailNotifications({...emailNotifications, systemUpdates: checked})
+                        }
+                      />
                     </FormItem>
 
                     <div className="pt-4">
