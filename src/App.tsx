@@ -15,8 +15,13 @@ import PostInternshipPage from "./pages/hr/PostInternshipPage";
 import HRApplicationsPage from "./pages/hr/ApplicationsPage";
 import CompanyProfilePage from "./pages/hr/CompanyProfilePage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ManageUsersPage from "./pages/admin/ManageUsersPage";
+import ManageInternshipsPage from "./pages/admin/ManageInternshipsPage";
+import ManageCompaniesPage from "./pages/admin/ManageCompaniesPage";
+import SettingsPage from "./pages/admin/SettingsPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import LoginPage from "./pages/auth/LoginPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const queryClient = new QueryClient();
 
@@ -47,9 +52,13 @@ const App = () => (
           
           {/* Admin routes */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<ManageUsersPage />} />
+          <Route path="/admin/internships" element={<ManageInternshipsPage />} />
+          <Route path="/admin/companies" element={<ManageCompaniesPage />} />
+          <Route path="/admin/settings" element={<SettingsPage />} />
           
-          {/* Catch-all redirect */}
-          <Route path="*" element={<Navigate to="/" />} />
+          {/* Not Found page */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
