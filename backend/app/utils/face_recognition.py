@@ -33,54 +33,51 @@ def preprocess_image(img):
     return img
 
 def get_face_embedding(img):
-    """
-    Generate face embedding from an image.
-    Args:
-        img (np.ndarray): Image as a numpy array.
-    Returns:
-        np.ndarray: 128-dimensional face embedding.
-    """
-    # Preprocess the image
     img = preprocess_image(img)
-
-    # Convert the image to a TensorFlow tensor
     input_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
-
-    # Perform inference using the model
     result = infer(input_tensor)
-
-    # Extract the embedding (use the correct output key)
-    embedding = result['Bottleneck_BatchNorm'].numpy()
-
-    # Flatten to 1D array
-    return embedding.flatten()
+    embedding = result['Bottleneck_BatchNorm'].numpy().flatten()
+    print("Face Embedding:", embedding)  # Print the embedding
+    return embedding
 
 def capture_face():
-    """
-    Capture a face from the webcam.
-    Returns:
-        np.ndarray: Captured face image as a numpy array.
-    """
-    # Initialize webcam
+    print("Starting face capture...")  # Debugging line
     cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        raise ValueError("Unable to access webcam. Please check your camera permissions.")
+
+    print("Please look at the camera for face capture...")
+    print("Press 's' to save the face and 'q' to quit.")
+
+    captured_image = None
 
     while True:
         ret, frame = cap.read()
         if not ret:
             raise ValueError("Unable to capture image from webcam.")
 
-        # Display the frame
         cv2.imshow("Capture Face", frame)
 
-        # Press 's' to save the face
-        if cv2.waitKey(1) & 0xFF == ord('s'):
+        key = cv2.waitKey(1) & 0xFF
+
+        if key == ord('s'):
+            captured_image = frame
+            print("Face captured successfully.")
+            # Save the captured image for debugging
+            cv2.imwrite("debug_login.jpg", captured_image)
             break
 
-    # Release the webcam and close the window
+        if key == ord('q'):
+            print("Face capture cancelled.")
+            break
+
     cap.release()
     cv2.destroyAllWindows()
 
-    return frame
+    if captured_image is None:
+        raise ValueError("No face was captured.")
+
+    return captured_image
 
 def calculate_euclidean_distance(embedding1, embedding2):
     """
@@ -93,16 +90,6 @@ def calculate_euclidean_distance(embedding1, embedding2):
     """
     return np.linalg.norm(embedding1 - embedding2)
 
-def compare_faces(embedding1, embedding2, threshold=1.0):
-    """
-    Compare two face embeddings using Euclidean distance.
-    Args:
-        embedding1 (np.ndarray): First face embedding.
-        embedding2 (np.ndarray): Second face embedding.
-        threshold (float): Threshold for face similarity.
-    Returns:
-        bool: True if the faces match, False otherwise.
-    """
-    # Calculate Euclidean distance
+def compare_faces(embedding1, embedding2, threshold=1.2):  # Increased threshold
     distance = calculate_euclidean_distance(embedding1, embedding2)
     return distance < threshold
