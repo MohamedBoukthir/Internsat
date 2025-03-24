@@ -5,31 +5,33 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Camera, KeyRound } from "lucide-react";
+import { Camera } from "lucide-react";
 import FaceCapture from "@/components/auth/FaceCapture";
+import { login } from "@/services/api";
 
 const LoginForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [step, setStep] = useState(1); // Step 1: Credentials, Step 2: Face Capture
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [faceData, setFaceData] = useState<string | null>(null);
+  const [faceData, setFaceData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Handle credential submission
-  const handleCredentialSubmit = (e: React.FormEvent) => {
+  const handleCredentialSubmit = (e) => {
     e.preventDefault();
-    setStep(2); // Move to face capture step
+    setStep(2);  // Move to face capture step
   };
 
   // Handle face capture
-  const handleFaceCapture = (imageData: string) => {
+  const handleFaceCapture = (imageData) => {
+    console.log("Captured face data:", imageData);
     setFaceData(imageData);
-    setStep(3); // Move to final submission step
+    setStep(3);  // Move to final submission step
   };
 
-  // Handle final login submission
+  // Handle login submission
   const handleLogin = async () => {
     if (!faceData) {
       toast({
@@ -39,21 +41,23 @@ const LoginForm = () => {
       });
       return;
     }
-
+    console.log("Login payload:", { email, password, faceData });  // Log the payload
     setIsLoading(true);
     try {
-      // Simulate authentication (send credentials + face data to server)
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // For demo purposes, hardcoded roles
-      if (email.includes("admin")) {
+      const response = await login(email, password, faceData);
+      console.log("Login response:", response);  // Log the response
+      localStorage.setItem('token', response.access_token);
+  
+      // Redirect based on the role returned by the backend
+      const role = response.role;
+      if (role === "admin") {
         navigate("/admin/dashboard");
-      } else if (email.includes("hr")) {
+      } else if (role === "hr") {
         navigate("/hr/dashboard");
       } else {
         navigate("/student/dashboard");
       }
-
+  
       toast({
         title: "Login successful",
         description: "Welcome back!",
@@ -114,7 +118,7 @@ const LoginForm = () => {
           <FaceCapture onCapture={handleFaceCapture} isVerifying={false} />
           <Button
             className="w-full mt-4"
-            onClick={() => setStep(1)} // Go back to credentials step
+            onClick={() => setStep(1)}
           >
             Back to Credentials
           </Button>
@@ -145,7 +149,7 @@ const LoginForm = () => {
               {isLoading ? "Logging in..." : "Complete Login"}
             </Button>
             <Button
-              onClick={() => setStep(2)} // Retake photo
+              onClick={() => setStep(2)}
               disabled={isLoading}
               className="w-full"
             >

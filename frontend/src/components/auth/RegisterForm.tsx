@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -6,15 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select"
-import { Camera, User, CheckCircle, XCircle } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Camera } from "lucide-react";
 import FaceCapture from "@/components/auth/FaceCapture";
+import { register } from "@/services/api";
 
 const RegisterForm = () => {
   const { toast } = useToast();
@@ -27,43 +21,57 @@ const RegisterForm = () => {
     password: "",
     role: "student",
   });
-  const [faceData, setFaceData] = useState<string | null>(null);
+  const [faceData, setFaceData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  // Handle input changes
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUserData(prev => ({ ...prev, [name]: value }));
+    setUserData((prev) => ({ ...prev, [name]: value }));
   };
-  
-  const handleRoleChange = (value: string) => {
-    setUserData(prev => ({ ...prev, role: value }));
+
+  // Handle role selection
+  const handleRoleChange = (value) => {
+    setUserData((prev) => ({ ...prev, role: value }));
   };
-  
-  const handleNext = (e: React.FormEvent) => {
+
+  // Handle next step
+  const handleNext = (e) => {
     e.preventDefault();
     setStep(2);
   };
-  
-  const handleCapture = (imageData: string) => {
+
+  // Handle face capture
+  const handleCapture = (imageData) => {
     setFaceData(imageData);
     setStep(3);
   };
-  
+
+  // Handle registration submission
   const handleRegister = async () => {
     if (!faceData) return;
-    
+
     setIsLoading(true);
     try {
-      // In a real app, would send user data and face data to server
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      const userDataToSend = {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        password: userData.password,
+        role: userData.role,
+        image: faceData,
+      };
+
+      // Send user data to the backend
+      const response = await register(userDataToSend);
+
       toast({
         title: "Registration successful",
         description: "Your account has been created successfully.",
       });
-      
+
       // Redirect to login tab
-      navigate("/auth", { state: { tab: "login" } });
+      navigate("/login");
     } catch (error) {
       toast({
         variant: "destructive",
@@ -74,12 +82,7 @@ const RegisterForm = () => {
       setIsLoading(false);
     }
   };
-  
-  const restartCapture = () => {
-    setFaceData(null);
-    setStep(2);
-  };
-  
+
   return (
     <div>
       {step === 1 && (
@@ -106,7 +109,7 @@ const RegisterForm = () => {
               />
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -118,7 +121,7 @@ const RegisterForm = () => {
               required
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
@@ -130,7 +133,7 @@ const RegisterForm = () => {
               required
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="role">Role</Label>
             <Select value={userData.role} onValueChange={handleRoleChange}>
@@ -142,15 +145,14 @@ const RegisterForm = () => {
                 <SelectItem value="hr">HR Manager</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-white/60">Admin accounts can only be created by existing admins</p>
           </div>
-          
+
           <Button type="submit" className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
             Next: Capture Face
           </Button>
         </form>
       )}
-      
+
       {step === 2 && (
         <Card className="p-4 border border-white/10 bg-background/20">
           <div className="text-center mb-4">
@@ -158,7 +160,7 @@ const RegisterForm = () => {
             <p className="text-white/80">Center your face in the frame and take a photo</p>
           </div>
           <FaceCapture onCapture={handleCapture} isVerifying={false} />
-          <Button 
+          <Button
             className="w-full mt-4"
             onClick={() => setStep(1)}
           >
@@ -166,34 +168,32 @@ const RegisterForm = () => {
           </Button>
         </Card>
       )}
-      
+
       {step === 3 && faceData && (
         <Card className="p-4 border border-white/10 bg-background/20">
           <div className="text-center mb-4">
             <h3 className="text-lg font-medium text-white">Confirm Registration</h3>
             <p className="text-white/80">Your face has been captured successfully</p>
           </div>
-          
+
           <div className="flex justify-center mb-4">
-            {faceData && (
-              <img 
-                src={faceData} 
-                alt="Captured face" 
-                className="w-32 h-32 object-cover rounded-full border-2 border-white/20" 
-              />
-            )}
+            <img
+              src={faceData}
+              alt="Captured face"
+              className="w-32 h-32 object-cover rounded-full border-2 border-white/20"
+            />
           </div>
-          
+
           <div className="flex flex-col gap-3">
-            <Button 
-              onClick={handleRegister} 
+            <Button
+              onClick={handleRegister}
               disabled={isLoading}
               className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
             >
               {isLoading ? "Creating Account..." : "Complete Registration"}
             </Button>
-            <Button 
-              onClick={restartCapture}
+            <Button
+              onClick={() => setStep(2)}
               disabled={isLoading}
               className="w-full"
             >

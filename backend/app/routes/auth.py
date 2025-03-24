@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token
-from app.utils.face_recognition import capture_face, get_face_embedding, compare_faces
+from app.utils.face_recognition import get_face_embedding, compare_faces
 from app.models.user import User
 import bcrypt
 import numpy as np
@@ -10,28 +10,27 @@ auth_bp = Blueprint('auth', __name__)
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.json
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
+    firstName = data.get('firstName')
+    lastName = data.get('lastName')
     email = data.get('email')
     password = data.get('password')
     role = data.get('role')
+    image = data.get('image')  # Base64-encoded image from the frontend
 
-    # Check if user already exists
-    if User.find_user_by_email(email):
-        return jsonify({"error": "User already exists"}), 400
-
-    # Capture face from webcam
-    print("Please look at the camera for face capture...")
-    face_image = capture_face()
+    # Validate image data
+    if not image:
+        return jsonify({"error": "Image data is missing"}), 400
 
     # Generate face embedding
-    face_embedding = get_face_embedding(face_image)
+    face_embedding = get_face_embedding(image)
+    if face_embedding is None:
+        return jsonify({"error": "Failed to generate face embedding"}), 400
 
     # Hash the password
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     # Create the user
-    User.create_user(first_name, last_name, email, hashed_password, role, face_embedding.tolist())
+    User.create_user(firstName, lastName, email, hashed_password, role, face_embedding.tolist())
     return jsonify({"message": "User registered successfully"}), 201
 
 @auth_bp.route('/login', methods=['POST'])
@@ -39,23 +38,47 @@ def login():
     data = request.json
     email = data.get('email')
     password = data.get('password')
+    image = data.get('image')  # Base64-encoded face image
+
+    print(f"Login request received for email: {email}")
+    print(f"Image data length: {len(image) if image else 'None'}")
 
     # Find user by email
     user = User.find_user_by_email(email)
-    if not user or not bcrypt.checkpw(password.encode('utf-8'), user['password']):
+    if not user:
+        print("Error: User not found")
         return jsonify({"error": "Invalid credentials"}), 401
 
-    # Capture live face from webcam
-    print("Please look at the camera for face verification...")
-    live_face_image = capture_face()
+    # Verify password
+    if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
+        print("Error: Invalid password")
+        return jsonify({"error": "Invalid credentials"}), 401
 
     # Generate live face embedding
-    live_face_embedding = get_face_embedding(live_face_image)
+    live_face_embedding = get_face_embedding(image)
+    if live_face_embedding is None:
+        print("Error: Failed to generate live face embedding")
+        return jsonify({"error": "Face embedding failed"}), 401
 
-    # Compare face embeddings
-    if not compare_faces(np.array(user['face_embedding']), live_face_embedding):
+    # Retrieve stored embedding
+    stored_face_embedding = np.array(user['face_embedding'])
+    if stored_face_embedding is None:
+        print("Error: No stored embedding found")
+        return jsonify({"error": "No stored embedding found"}), 401
+
+    # Compare faces
+    if not compare_faces(stored_face_embedding, live_face_embedding):
+        print("Error: Face recognition failed")
         return jsonify({"error": "Face recognition failed"}), 401
 
-    # Generate JWT token
-    access_token = create_access_token(identity={"email": email, "role": user['role']})
-    return jsonify({"access_token": access_token}), 200
+    # Create JWT token
+    access_token = create_access_token(identity={
+        "email": email,
+        "role": user['role']
+    })
+
+    print("Login successful") 
+    return jsonify({
+        "access_token": access_token,
+        "role": user['role']
+    }), 200

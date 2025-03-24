@@ -6,16 +6,16 @@ import bcrypt
 load_dotenv()
 
 client = MongoClient(os.getenv("MONGO_URI"))
-db = client.internship_platform
+db = client.internsat
 
 class User:
     collection = db.users
 
     @staticmethod
-    def create_user(first_name, last_name, email, password, role, face_embedding):
+    def create_user(firstName, lastName, email, password, role, face_embedding):
         user = {
-            "first_name": first_name,
-            "last_name": last_name,
+            "firstName": firstName,
+            "lastName": lastName,
             "email": email,
             "password": password,
             "role": role,

@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import cv2
+import base64
 
 # Path to the saved model directory
 model_dir = "app/models/facenet"  # Replace with the path to your facenet folder
@@ -10,6 +11,27 @@ model = tf.saved_model.load(model_dir)
 
 # Access the inference function
 infer = model.signatures['serving_default']
+
+def detect_face(img):
+    """
+    Detect a face in the image using OpenCV's Haar Cascade.
+    Args:
+        img (np.ndarray): Image as a numpy array.
+    Returns:
+        np.ndarray: Cropped face image as a numpy array.
+    """
+    # Load a pre-trained face detection model
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+    if len(faces) == 0:
+        print("Error: No face detected in the image.")
+        return None
+
+    # Return the first detected face
+    (x, y, w, h) = faces[0]
+    return img[y:y+h, x:x+w]
 
 def preprocess_image(img):
     """
@@ -32,52 +54,42 @@ def preprocess_image(img):
     img = np.expand_dims(img, axis=0)
     return img
 
-def get_face_embedding(img):
-    img = preprocess_image(img)
-    input_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
-    result = infer(input_tensor)
-    embedding = result['Bottleneck_BatchNorm'].numpy().flatten()
-    print("Face Embedding:", embedding)  # Print the embedding
-    return embedding
+def get_face_embedding(base64_image):
+    """
+    Generate face embedding from a base64-encoded image.
+    Args:
+        base64_image (str): Base64-encoded image.
+    Returns:
+        np.ndarray: 128-dimensional face embedding.
+    """
+    try:
+        # Decode the base64 image
+        image_bytes = base64.b64decode(base64_image.split(',')[1])  # Remove the data URL prefix
+        image_np = np.frombuffer(image_bytes, dtype=np.uint8)
+        img = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
 
-def capture_face():
-    print("Starting face capture...")  # Debugging line
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        raise ValueError("Unable to access webcam. Please check your camera permissions.")
+        if img is None:
+            print("Error: Failed to decode image.")
+            return None
 
-    print("Please look at the camera for face capture...")
-    print("Press 's' to save the face and 'q' to quit.")
+        # Detect face
+        face_img = detect_face(img)
+        if face_img is None:
+            return None
 
-    captured_image = None
+        # Preprocess the image
+        face_img = preprocess_image(face_img)
 
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            raise ValueError("Unable to capture image from webcam.")
+        # Generate embedding
+        input_tensor = tf.convert_to_tensor(face_img, dtype=tf.float32)
+        result = infer(input_tensor)
+        embedding = result['Bottleneck_BatchNorm'].numpy().flatten()
 
-        cv2.imshow("Capture Face", frame)
-
-        key = cv2.waitKey(1) & 0xFF
-
-        if key == ord('s'):
-            captured_image = frame
-            print("Face captured successfully.")
-            # Save the captured image for debugging
-            cv2.imwrite("debug_login.jpg", captured_image)
-            break
-
-        if key == ord('q'):
-            print("Face capture cancelled.")
-            break
-
-    cap.release()
-    cv2.destroyAllWindows()
-
-    if captured_image is None:
-        raise ValueError("No face was captured.")
-
-    return captured_image
+        print(f"Generated embedding shape: {embedding.shape}")
+        return embedding
+    except Exception as e:
+        print(f"Error in get_face_embedding: {e}")
+        return None
 
 def calculate_euclidean_distance(embedding1, embedding2):
     """
@@ -90,6 +102,16 @@ def calculate_euclidean_distance(embedding1, embedding2):
     """
     return np.linalg.norm(embedding1 - embedding2)
 
-def compare_faces(embedding1, embedding2, threshold=1.2):  # Increased threshold
+def compare_faces(embedding1, embedding2, threshold=4.5):
+    """
+    Compare two face embeddings using Euclidean distance.
+    Args:
+        embedding1 (np.ndarray): First face embedding.
+        embedding2 (np.ndarray): Second face embedding.
+        threshold (float): Threshold for face comparison.
+    Returns:
+        bool: True if the distance is below the threshold, False otherwise.
+    """
     distance = calculate_euclidean_distance(embedding1, embedding2)
+    print(f"Euclidean distance: {distance}")
     return distance < threshold
