@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from pymongo import MongoClient
+from .database import db 
 from dotenv import load_dotenv
 import os
 
@@ -14,11 +14,6 @@ def create_app():
     # Configure JWT
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
     jwt = JWTManager(app)
-
-    # Configure MongoDB
-    mongo_uri = os.getenv("MONGO_URI")
-    client = MongoClient(mongo_uri)
-    db = client.internsat
 
     # Import and register Blueprints
     from .routes.auth import auth_bp

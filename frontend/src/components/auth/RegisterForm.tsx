@@ -73,11 +73,20 @@ const RegisterForm = () => {
       // Redirect to login tab
       navigate("/login");
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Registration failed",
-        description: "Something went wrong. Please try again.",
-      });
+      // Check for specific error message
+      if (error.response?.data?.error === "Email already exists") {
+        toast({
+          variant: "destructive",
+          title: "Registration failed",
+          description: "The email you entered is already registered. Please use a different email.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Registration failed",
+          description: "Something went wrong. Please try again.",
+        });
+      }
     } finally {
       setIsLoading(false);
     }

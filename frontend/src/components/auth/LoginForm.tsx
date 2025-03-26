@@ -62,6 +62,7 @@ const LoginForm = () => {
         title: "Login successful",
         description: "Welcome back!",
       });
+      console.log(email); // debugging
     } catch (error) {
       toast({
         variant: "destructive",

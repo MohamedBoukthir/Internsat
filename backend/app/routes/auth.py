@@ -17,6 +17,11 @@ def register():
     role = data.get('role')
     image = data.get('image')  # Base64-encoded image from the frontend
 
+    # Check if the email already exists
+    existing_user = User.find_user_by_email(email)
+    if existing_user:
+        return jsonify({"error": "Email already exists"}), 400
+
     # Validate image data
     if not image:
         return jsonify({"error": "Image data is missing"}), 400
