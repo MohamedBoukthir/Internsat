@@ -73,12 +73,18 @@ const RegisterForm = () => {
       // Redirect to login tab
       navigate("/login");
     } catch (error) {
-      // Check for specific error message
+      // Check for specific error messages
       if (error.response?.data?.error === "Email already exists") {
         toast({
           variant: "destructive",
           title: "Registration failed",
           description: "The email you entered is already registered. Please use a different email.",
+        });
+      } else if (error.response?.data?.error === "Face already registered") {
+        toast({
+          variant: "destructive",
+          title: "Registration failed",
+          description: "The face you used is already registered. Please use a different face.",
         });
       } else {
         toast({

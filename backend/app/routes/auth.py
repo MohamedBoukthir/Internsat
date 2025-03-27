@@ -31,6 +31,11 @@ def register():
     if face_embedding is None:
         return jsonify({"error": "Failed to generate face embedding"}), 400
 
+    # Check if the face embedding already exists
+    existing_face_user = User.find_user_by_face_embedding(face_embedding.tolist())
+    if existing_face_user:
+        return jsonify({"error": "Face already registered"}), 400
+
     # Hash the password
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 

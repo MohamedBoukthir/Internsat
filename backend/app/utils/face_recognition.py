@@ -11,6 +11,7 @@ model = tf.saved_model.load(model_dir)
 
 # Access the inference function
 infer = model.signatures['serving_default']
+print(infer.structured_outputs)
 
 def detect_face(img):
     """
@@ -20,7 +21,6 @@ def detect_face(img):
     Returns:
         np.ndarray: Cropped face image as a numpy array.
     """
-    # Load a pre-trained face detection model
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
@@ -29,8 +29,13 @@ def detect_face(img):
         print("Error: No face detected in the image.")
         return None
 
-    # Return the first detected face
+    # Crop the first detected face
     (x, y, w, h) = faces[0]
+    margin = 10  # Add a margin around the face
+    x = max(0, x - margin)
+    y = max(0, y - margin)
+    w = w + 2 * margin
+    h = h + 2 * margin
     return img[y:y+h, x:x+w]
 
 def preprocess_image(img):
@@ -102,7 +107,7 @@ def calculate_euclidean_distance(embedding1, embedding2):
     """
     return np.linalg.norm(embedding1 - embedding2)
 
-def compare_faces(embedding1, embedding2, threshold=4):
+def compare_faces(embedding1, embedding2, threshold=1.2):  # Lowered threshold
     """
     Compare two face embeddings using Euclidean distance.
     Args:
