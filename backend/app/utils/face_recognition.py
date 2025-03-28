@@ -107,7 +107,7 @@ def calculate_euclidean_distance(embedding1, embedding2):
     """
     return np.linalg.norm(embedding1 - embedding2)
 
-def compare_faces(embedding1, embedding2, threshold=1.2):  # Lowered threshold
+def compare_faces(embedding1, embedding2, threshold=2.5):  
     """
     Compare two face embeddings using Euclidean distance.
     Args:
