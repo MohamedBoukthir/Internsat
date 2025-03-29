@@ -1,12 +1,17 @@
 from flask import Blueprint, request, jsonify
+from werkzeug.exceptions import Unauthorized
 from flask_jwt_extended import create_access_token
 from app.utils.face_recognition import get_face_embedding, compare_faces
 from app.models.user import User
 import bcrypt
 import numpy as np
+from datetime import datetime, timezone
+
+revoked_tokens = set()
 
 auth_bp = Blueprint('auth', __name__)
 
+# Register route
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.json
@@ -43,6 +48,7 @@ def register():
     User.create_user(firstName, lastName, email, hashed_password, role, face_embedding.tolist())
     return jsonify({"message": "User registered successfully"}), 201
 
+# Login route
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -87,8 +93,10 @@ def login():
         "role": user['role']
     })
 
-    print("Login successful") 
+    print("Login successful")
     return jsonify({
         "access_token": access_token,
         "role": user['role']
     }), 200
+
+

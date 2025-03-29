@@ -26,7 +26,7 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
   const location = useLocation();
 
   const handleLogout = () => {
-    // In a real app, would clear auth state here
+    localStorage.removeItem('token');
     navigate("/");
   };
 
