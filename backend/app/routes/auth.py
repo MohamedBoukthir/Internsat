@@ -1,13 +1,20 @@
 from flask import Blueprint, request, jsonify
-from werkzeug.exceptions import Unauthorized
 from flask_jwt_extended import create_access_token
 from app.utils.face_recognition import get_face_embedding, compare_faces
 from app.models.user import User
 import bcrypt
 import numpy as np
-from datetime import datetime, timezone
+from cryptography.fernet import Fernet
+import base64
+import os
 
-revoked_tokens = set()
+
+# Load encryption key from environment variable
+encryption_key = os.getenv("ENCRYPTION_KEY")
+if not encryption_key:
+    raise ValueError("ENCRYPTION_KEY is not set in the environment variables.")
+cipher = Fernet(encryption_key.encode('utf-8'))
+
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -36,16 +43,19 @@ def register():
     if face_embedding is None:
         return jsonify({"error": "Failed to generate face embedding"}), 400
 
-    # Check if the face embedding already exists
-    existing_face_user = User.find_user_by_face_embedding(face_embedding.tolist())
-    if existing_face_user:
-        return jsonify({"error": "Face already registered"}), 400
+    # Ensure the embedding is a NumPy array of consistent dtype
+    face_embedding = np.array(face_embedding, dtype=np.float32)
+
+    # Encrypt the face embedding
+    face_embedding_bytes = face_embedding.tobytes()
+    base64_encoded_embedding = base64.b64encode(face_embedding_bytes)
+    encrypted_face_embedding = cipher.encrypt(base64_encoded_embedding)
 
     # Hash the password
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     # Create the user
-    User.create_user(firstName, lastName, email, hashed_password, role, face_embedding.tolist())
+    User.create_user(firstName, lastName, email, hashed_password, role, encrypted_face_embedding.decode('utf-8'))
     return jsonify({"message": "User registered successfully"}), 201
 
 # Login route
@@ -56,35 +66,30 @@ def login():
     password = data.get('password')
     image = data.get('image')  # Base64-encoded face image
 
-    print(f"Login request received for email: {email}")
-    print(f"Image data length: {len(image) if image else 'None'}")
-
     # Find user by email
     user = User.find_user_by_email(email)
     if not user:
-        print("Error: User not found")
         return jsonify({"error": "Invalid credentials"}), 401
 
     # Verify password
     if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
-        print("Error: Invalid password")
         return jsonify({"error": "Invalid credentials"}), 401
+
+    # Decrypt the stored face embedding
+    encrypted_face_embedding = user['face_embedding'].encode('utf-8')
+    base64_encoded_embedding = cipher.decrypt(encrypted_face_embedding)
+    decrypted_face_embedding = np.frombuffer(base64.b64decode(base64_encoded_embedding), dtype=np.float32)
 
     # Generate live face embedding
     live_face_embedding = get_face_embedding(image)
     if live_face_embedding is None:
-        print("Error: Failed to generate live face embedding")
         return jsonify({"error": "Face embedding failed"}), 401
 
-    # Retrieve stored embedding
-    stored_face_embedding = np.array(user['face_embedding'])
-    if stored_face_embedding is None:
-        print("Error: No stored embedding found")
-        return jsonify({"error": "No stored embedding found"}), 401
+    # Ensure the live embedding is a NumPy array of consistent dtype
+    live_face_embedding = np.array(live_face_embedding, dtype=np.float32)
 
     # Compare faces
-    if not compare_faces(stored_face_embedding, live_face_embedding):
-        print("Error: Face recognition failed")
+    if not compare_faces(decrypted_face_embedding, live_face_embedding):
         return jsonify({"error": "Face recognition failed"}), 401
 
     # Create JWT token
@@ -93,10 +98,7 @@ def login():
         "role": user['role']
     })
 
-    print("Login successful")
     return jsonify({
         "access_token": access_token,
         "role": user['role']
     }), 200
-
-
