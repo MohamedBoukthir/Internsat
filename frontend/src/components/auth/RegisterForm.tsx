@@ -24,25 +24,69 @@ const RegisterForm = () => {
   const [faceData, setFaceData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Validation errors
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
+
+  // Helper functions for validation
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isStrongPassword = (password: string) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
   // Handle input changes
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear errors on input change
   };
 
   // Handle role selection
-  const handleRoleChange = (value) => {
+  const handleRoleChange = (value: string) => {
     setUserData((prev) => ({ ...prev, role: value }));
   };
 
+  // Validate inputs before proceeding to the next step
+  const validateInputs = () => {
+    const newErrors: any = {};
+
+    if (!userData.firstName.trim()) newErrors.firstName = "First name is required.";
+    if (!userData.lastName.trim()) newErrors.lastName = "Last name is required.";
+    if (!userData.email.trim()) {
+      newErrors.email = "Email is required.";
+    } else if (!isValidEmail(userData.email)) {
+      newErrors.email = "Invalid email format.";
+    }
+    if (!userData.password.trim()) {
+      newErrors.password = "Password is required.";
+    } else if (!isStrongPassword(userData.password)) {
+      newErrors.password =
+        "Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
+  };
+
   // Handle next step
-  const handleNext = (e) => {
+  const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
-    setStep(2);
+    if (validateInputs()) {
+      setStep(2);
+    }
   };
 
   // Handle face capture
-  const handleCapture = (imageData) => {
+  const handleCapture = (imageData: string) => {
     setFaceData(imageData);
     setStep(3);
   };
@@ -112,6 +156,7 @@ const RegisterForm = () => {
                 onChange={handleInputChange}
                 required
               />
+              {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
@@ -122,6 +167,7 @@ const RegisterForm = () => {
                 onChange={handleInputChange}
                 required
               />
+              {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
             </div>
           </div>
 
@@ -135,6 +181,7 @@ const RegisterForm = () => {
               onChange={handleInputChange}
               required
             />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
 
           <div className="space-y-2">
@@ -147,6 +194,7 @@ const RegisterForm = () => {
               onChange={handleInputChange}
               required
             />
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
 
           <div className="space-y-2">

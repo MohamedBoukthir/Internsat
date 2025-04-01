@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token
 from app.utils.face_recognition import get_face_embedding, compare_faces
 from app.models.user import User
+from app.utils.validation import is_valid_email, is_strong_password  # Import validation functions
 import bcrypt
 import numpy as np
 from cryptography.fernet import Fernet
@@ -28,6 +29,16 @@ def register():
     password = data.get('password')
     role = data.get('role')
     image = data.get('image')  # Base64-encoded image from the frontend
+
+    # Validate input fields
+    if not firstName or not lastName or not email or not password or not role:
+        return jsonify({"error": "All fields are required"}), 400
+
+    if not is_valid_email(email):
+        return jsonify({"error": "Invalid email format"}), 400
+
+    if not is_strong_password(password):
+        return jsonify({"error": "Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character"}), 400
 
     # Check if the email already exists
     existing_user = User.find_user_by_email(email)
@@ -58,6 +69,7 @@ def register():
     User.create_user(firstName, lastName, email, hashed_password, role, encrypted_face_embedding.decode('utf-8'))
     return jsonify({"message": "User registered successfully"}), 201
 
+
 # Login route
 @auth_bp.route('/login', methods=['POST'])
 def login():
@@ -65,6 +77,13 @@ def login():
     email = data.get('email')
     password = data.get('password')
     image = data.get('image')  # Base64-encoded face image
+
+    # Validate input fields
+    if not email or not password or not image:
+        return jsonify({"error": "All fields are required"}), 400
+
+    if not is_valid_email(email):
+        return jsonify({"error": "Invalid email format"}), 400
 
     # Find user by email
     user = User.find_user_by_email(email)

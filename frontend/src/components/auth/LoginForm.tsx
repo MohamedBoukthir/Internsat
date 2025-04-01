@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Camera } from "lucide-react";
 import FaceCapture from "@/components/auth/FaceCapture";
 import { login } from "@/services/api";
 
@@ -18,17 +17,57 @@ const LoginForm = () => {
   const [faceData, setFaceData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Validation errors
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  // Helper function for email validation
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Helper function for password strength validation
+  const isStrongPassword = (password: string) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  // Validate inputs before proceeding to the next step
+  const validateInputs = () => {
+    const newErrors: any = {};
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required.";
+    } else if (!isValidEmail(email)) {
+      newErrors.email = "Invalid email format.";
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required.";
+    } else if (!isStrongPassword(password)) {
+      newErrors.password =
+        "Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
+  };
+
   // Handle credential submission
-  const handleCredentialSubmit = (e) => {
+  const handleCredentialSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStep(2);  // Move to face capture step
+    if (validateInputs()) {
+      setStep(2); // Move to face capture step
+    }
   };
 
   // Handle face capture
-  const handleFaceCapture = (imageData) => {
-    console.log("Captured face data:", imageData);
+  const handleFaceCapture = (imageData: string) => {
     setFaceData(imageData);
-    setStep(3);  // Move to final submission step
+    setStep(3); // Move to final submission step
   };
 
   // Handle login submission
@@ -41,13 +80,12 @@ const LoginForm = () => {
       });
       return;
     }
-    console.log("Login payload:", { email, password, faceData });  // Log the payload
+
     setIsLoading(true);
     try {
       const response = await login(email, password, faceData);
-      console.log("Login response:", response);  // Log the response
-      localStorage.setItem('token', response.access_token);
-  
+      localStorage.setItem("token", response.access_token);
+
       // Redirect based on the role returned by the backend
       const role = response.role;
       if (role === "admin") {
@@ -57,12 +95,11 @@ const LoginForm = () => {
       } else {
         navigate("/student/dashboard");
       }
-  
+
       toast({
         title: "Login successful",
         description: "Welcome back!",
       });
-      console.log(email); // debugging
     } catch (error) {
       toast({
         variant: "destructive",
@@ -85,9 +122,13 @@ const LoginForm = () => {
               type="email"
               placeholder="name@example.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors((prev) => ({ ...prev, email: "" })); // Clear email error
+              }}
               required
             />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -100,9 +141,13 @@ const LoginForm = () => {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors((prev) => ({ ...prev, password: "" })); // Clear password error
+              }}
               required
             />
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <Button type="submit" className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]">
             Next: Capture Face
@@ -117,10 +162,7 @@ const LoginForm = () => {
             <p className="text-white/80">Center your face in the frame and take a photo</p>
           </div>
           <FaceCapture onCapture={handleFaceCapture} isVerifying={false} />
-          <Button
-            className="w-full mt-4"
-            onClick={() => setStep(1)}
-          >
+          <Button className="w-full mt-4" onClick={() => setStep(1)}>
             Back to Credentials
           </Button>
         </Card>
