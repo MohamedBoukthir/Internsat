@@ -1,6 +1,6 @@
 # Internsat
 
-This project is a web application designed to manage internships. It consists of a backend built with Flask and a frontend built with Vite + React.
+Internsat is a web application designed to streamline internship management. It provides features like user registration, face recognition for authentication, and an intuitive interface for managing internship details.
 
 ## Table of Contents
 
@@ -20,11 +20,25 @@ This project is a web application designed to manage internships. It consists of
 - User registration and login
 - Face recognition for authentication
 - Internship management
+- Responsive frontend built with modern web technologies
+- **Security Features**:
+  - Password hashing 
+  - Embedded stored hash-based authentication mechanisms
+  - Input validation on both frontend and backend to prevent injection attacks
+  - Secure storage of sensitive data (e.g., environment variables and user credentials)
 
 ## Technologies
 
 - **Backend**: Flask, MongoDB, TensorFlow, MTCNN
 - **Frontend**: Vite, TypeScript, React, shadcn-ui, Tailwind CSS
+
+## Requirements
+
+To install and run this project, ensure you have the following installed on your system:
+
+- [Git](https://git-scm.com/) (version 2.45.1 or higher)
+- [Node.js](https://nodejs.org/) (version 22.14.0 or higher)
+- [Python](https://www.python.org/) (version 3.12 or higher)
 
 ## Setup
   **Clone the repository:**
