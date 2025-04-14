@@ -84,16 +84,20 @@ const LoginForm = () => {
     setIsLoading(true);
     try {
       const response = await login(email, password, faceData);
-      localStorage.setItem("token", response.access_token);
+      const { access_token, role } = response;
 
-      // Redirect based on the role returned by the backend
-      const role = response.role;
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("role", role); 
+
+
       if (role === "admin") {
         navigate("/admin/dashboard");
       } else if (role === "hr") {
         navigate("/hr/dashboard");
-      } else {
+      } else if (role === "student") {
         navigate("/student/dashboard");
+      } else {
+        navigate("/"); // fallback
       }
 
       toast({

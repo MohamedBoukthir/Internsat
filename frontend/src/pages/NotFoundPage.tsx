@@ -20,17 +20,21 @@ const NotFoundPage = () => {
           </p>
           <div className="space-y-4">
             <Button
-              onClick={() => navigate("/")}
+               onClick={() => {
+                const role = localStorage.getItem("role");
+                if (role === "admin") {
+                  navigate("/admin/dashboard");
+                } else if (role === "student") {
+                  navigate("/student/dashboard");
+                } else if (role === "hr") {
+                  navigate("/hr/dashboard");
+                } else {
+                  navigate("/"); 
+                }
+              }}
               className="w-full bg-[#F2FF44] text-black hover:bg-[#E2EF34]"
             >
               Go to Home
-            </Button>
-            <Button
-              onClick={() => navigate(-1)}
-              variant="outline"
-              className="w-full border-white/20 text-white hover:bg-white/10"
-            >
-              Go Back
             </Button>
           </div>
         </div>
