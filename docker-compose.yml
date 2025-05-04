@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  internsat-backend:
+    build:
+      context: ./backend
+    container_name: internsat-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+
+  internsat-frontend:
+    build:
+      context: ./frontend
+    container_name: internsat-frontend
+    depends_on:
+      - internsat-backend
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:/app
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    depends_on:
+      - internsat-backend
+      - internsat-frontend
+    ports:
+      - "8080:80"

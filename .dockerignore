@@ -1,0 +1,10 @@
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Docker-related files
+docker-compose.override.yml
+*.env
