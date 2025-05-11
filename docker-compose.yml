@@ -8,11 +8,11 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - .env
+      - ./backend/.env
     volumes:
       - ./backend:/app
     environment:
-      - TF_CPP_MIN_LOG_LEVEL=2
+      - FLASK_RUN_HOST=0.0.0.0
 
   internsat-frontend:
     build:
@@ -20,9 +20,12 @@ services:
     container_name: internsat-frontend
     depends_on:
       - internsat-backend
+    environment:
+      - REACT_APP_API_URL=/api
     env_file:
-      - .env
-    volumes: []
+      - ./frontend/.env
+    volumes: 
+      - ./frontend:/app
 
   nginx:
     image: nginx:alpine

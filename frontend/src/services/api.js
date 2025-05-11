@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Use environment variable for flexibility, fallback to localhost for development
-const API_URL = 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 // Create an Axios instance for consistent API requests
 const api = axios.create({

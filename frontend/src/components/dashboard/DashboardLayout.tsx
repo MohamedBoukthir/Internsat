@@ -27,6 +27,7 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     navigate("/");
   };
 
