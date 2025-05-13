@@ -8,8 +8,12 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+# Debug: List all files in the /app directory
+RUN ls -R /app
+
 # Copy the application code and build
 COPY . .
+RUN ls -R /app/src/lib
 RUN npm run build
 
 # Stage 2: Serve with nginx
