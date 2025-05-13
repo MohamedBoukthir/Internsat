@@ -6,9 +6,11 @@ Internsat is a web application designed to streamline internship management. It 
 
 - [Features](#features)
 - [Technologies](#technologies)
+- [Requirements](#requirements)
 - [Setup](#setup)
   - [Backend](#backend)
   - [Frontend](#frontend)
+  - [Using Docker](#using-docker)
 - [Alternative Editing Methods](#alternative-editing-methods)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -39,6 +41,7 @@ To install and run this project, ensure you have the following installed on your
 - [Git](https://git-scm.com/) (version 2.45.1 or higher)
 - [Node.js](https://nodejs.org/) (version 22.14.0 or higher)
 - [Python](https://www.python.org/) (version 3.12 or higher)
+- [Docker](https://www.docker.com/) (optional, for running the project with Docker)
 
 ## Setup
   **Clone the repository:**
@@ -70,13 +73,11 @@ To install and run this project, ensure you have the following installed on your
     ```
 
 ### Frontend
-
   ```bash
    cd Internsat/frontend
    ```
 
 1. **Install dependencies:**
-
    ```bash
    npm install
    ```
@@ -84,3 +85,19 @@ To install and run this project, ensure you have the following installed on your
     ```bash
     npm run dev
     ```
+
+### Using Docker
+
+If you prefer to use Docker to run the project, follow these steps:
+
+1. **Ensure Docker is Installed**
+Make sure Docker is installed on your system. You can download and install it from the [official Docker website](https://www.docker.com/get-started/).
+
+2. **Build and Run the Docker Containers:**
+Navigate to the root of the project and run the following command:
+
+  ```bash
+  docker-compose up --build
+  ```
+
+
