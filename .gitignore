@@ -72,3 +72,4 @@ htmlcov/
 .env
 .env.local
 .env.*.local
+dockerToken.txt

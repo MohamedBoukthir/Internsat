@@ -1,0 +1,35 @@
+name: Internsat Backend Pipeline
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - backend/**
+      - 'docker-compose.yml'
+      - .github/workflows/*-backend.yml
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    name: Build and Push Backend Docker Image
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          file: backend/Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/internsat-backend:latest

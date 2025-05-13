@@ -2,21 +2,17 @@ version: "3.8"
 
 services:
   internsat-backend:
-    build:
-      context: ./backend
+    image: ${DOCKERHUB_USERNAME}/internsat-backend:latest
     container_name: internsat-backend
     ports:
       - "5000:5000"
     env_file:
       - ./backend/.env
-    volumes:
-      - ./backend:/app
     environment:
       - FLASK_RUN_HOST=0.0.0.0
 
   internsat-frontend:
-    build:
-      context: ./frontend
+    image: ${DOCKERHUB_USERNAME}/internsat-frontend:latest
     container_name: internsat-frontend
     depends_on:
       - internsat-backend
@@ -24,8 +20,6 @@ services:
       - REACT_APP_API_URL=/api
     env_file:
       - ./frontend/.env
-    volumes: 
-      - ./frontend:/app
 
   nginx:
     image: nginx:alpine
