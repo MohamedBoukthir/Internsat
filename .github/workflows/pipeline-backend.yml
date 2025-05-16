@@ -3,7 +3,6 @@ name: Internsat Backend Pipeline
 on:
   push:
     branches:
-      - master
       - main
     paths:
       - backend/**
