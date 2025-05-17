@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   internsat-backend:
-    image: mohamedboukthir/internsat-backend:latest
+    build: ./backend
     container_name: internsat-backend
     ports:
       - "5000:5000"
@@ -12,13 +12,13 @@ services:
       - FLASK_RUN_HOST=0.0.0.0
 
   internsat-frontend:
-    image: mohamedboukthir/internsat-frontend:latest
+    build: ./frontend
     container_name: internsat-frontend
     env_file:
       - ./frontend/.env.docker
     depends_on:
       - internsat-backend
-      
+
   nginx:
     image: nginx:alpine
     container_name: nginx
