@@ -35,6 +35,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Prepare Docker Env
+        run: cp frontend/.env.docker frontend/.env
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
