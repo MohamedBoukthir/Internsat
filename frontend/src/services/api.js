@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // Use environment variable for flexibility, fallback to localhost for development
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL;
+console.log("API_URL in use:", API_URL); // Debugging line
 
 // Create an Axios instance for consistent API requests
 const api = axios.create({
@@ -18,7 +19,7 @@ const api = axios.create({
  */
 export const register = async (userData) => {
   try {
-    const response = await api.post('/register', userData);
+    const response = await api.post(`${API_URL}/register`, userData);
     return response.data;
   } catch (error) {
     console.error("Registration failed:", error.response?.data?.message || "An error occurred");
@@ -35,7 +36,7 @@ export const register = async (userData) => {
  */
 export const login = async (email, password, image) => {
   try {
-    const response = await api.post('/login', { email, password, image });
+    const response = await api.post(`${API_URL}/login`, { email, password, image });
     return response.data;
   } catch (error) {
     console.error("Login failed:", error.response?.data?.message || "An error occurred");
