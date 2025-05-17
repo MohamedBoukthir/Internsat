@@ -31,8 +31,8 @@ const MOCK_APPLICATIONS = [
   {
     id: 1,
     position: "Frontend Developer Intern",
-    company: "TechCorp",
-    location: "San Francisco, CA",
+    company: "Vermeg",
+    location: "Tunis, Tunisia",
     appliedDate: "2024-04-10",
     status: "pending",
     statusText: "Application Under Review",
@@ -49,8 +49,8 @@ const MOCK_APPLICATIONS = [
   {
     id: 2,
     position: "UX/UI Design Intern",
-    company: "CreativeStudio",
-    location: "New York, NY",
+    company: "Telnet",
+    location: "Ariana, Tunisia",
     appliedDate: "2024-04-05",
     status: "interview",
     statusText: "Interview Scheduled",
@@ -59,7 +59,7 @@ const MOCK_APPLICATIONS = [
         type: "First Interview",
         date: "2024-04-20",
         time: "10:00 AM",
-        location: "Zoom Meeting"
+        location: "Telnet HQ, Ariana"
       }
     ],
     messages: [
@@ -73,15 +73,15 @@ const MOCK_APPLICATIONS = [
         id: 2,
         sender: "Interview Coordinator",
         date: "2024-04-08",
-        content: "Your interview has been scheduled for April 20th at 10:00 AM via Zoom. Details will be sent to your email."
+        content: "Your interview has been scheduled for April 20th at 10:00 AM at Telnet HQ."
       }
     ]
   },
   {
     id: 3,
     position: "Data Science Intern",
-    company: "AnalyticsPro",
-    location: "Remote",
+    company: "Sofrecom Tunisia",
+    location: "El Ghazala, Tunisia",
     appliedDate: "2024-03-25",
     status: "rejected",
     statusText: "Application Not Selected",
@@ -98,8 +98,8 @@ const MOCK_APPLICATIONS = [
   {
     id: 4,
     position: "Marketing Intern",
-    company: "BrandBoost",
-    location: "Chicago, IL",
+    company: "OneTech Group",
+    location: "La Marsa, Tunisia",
     appliedDate: "2024-04-01",
     status: "offered",
     statusText: "Offer Extended",
@@ -114,7 +114,7 @@ const MOCK_APPLICATIONS = [
         type: "Final Interview",
         date: "2024-04-15",
         time: "11:00 AM",
-        location: "Office Visit"
+        location: "OneTech Group, La Marsa"
       }
     ],
     messages: [
@@ -141,8 +141,8 @@ const MOCK_APPLICATIONS = [
   {
     id: 5,
     position: "Backend Developer Intern",
-    company: "ServerTech",
-    location: "Boston, MA",
+    company: "Wevioo",
+    location: "Lac 2, Tunis, Tunisia",
     appliedDate: "2024-03-28",
     status: "pending",
     statusText: "Technical Assessment",

@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,23 +18,23 @@ const StudentDashboard = () => {
   const recommendedInternships = [
     { 
       id: 1, 
-      title: "Frontend Developer", 
-      company: "TechCorp", 
-      location: "Remote",
+      title: "Frontend Developer Intern", 
+      company: "Vermeg", 
+      location: "Tunis, Tunisia",
       postedDate: "2 days ago" 
     },
     { 
       id: 2, 
-      title: "Data Analyst Intern", 
-      company: "DataFirm", 
-      location: "New York, NY",
+      title: "Data Science Intern", 
+      company: "Sofrecom Tunisia", 
+      location: "El Ghazala, Tunisia",
       postedDate: "1 week ago" 
     },
     { 
       id: 3, 
       title: "UX/UI Design Intern", 
-      company: "CreativeStudio", 
-      location: "San Francisco, CA",
+      company: "Telnet", 
+      location: "Ariana, Tunisia",
       postedDate: "3 days ago" 
     },
   ];

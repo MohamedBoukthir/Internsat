@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,30 +12,30 @@ const ProfilePage = () => {
 
   // Mock student data
   const studentData = {
-    name: "Alex Johnson",
-    email: "alex.johnson@university.edu",
-    avatar: "/placeholder-avatar.jpg",
-    phone: "+1 (555) 123-4567",
-    location: "New York, NY",
-    university: "State University",
-    major: "Computer Science",
-    graduationYear: "2024",
-    skills: ["React", "JavaScript", "TypeScript", "UI/UX Design", "Node.js"],
-    about: "Final year computer science student passionate about web development and user experience design. Looking for opportunities to apply my skills in a real-world environment.",
+    name: "Mohamed Boukthir",
+    email: "mohamed.boukthir@issatgafsa.tn",
+    avatar: "https://avatars.githubusercontent.com/u/124532428?v=4",
+    phone: "+216 20 123 456",
+    location: "Gafsa, Tunisia",
+    university: "ISSAT Gafsa",
+    major: "Cybersecurity (Master)",
+    graduationYear: "2025",
+    skills: ["Cybersecurity", "Network Security", "Python", "Linux", "Penetration Testing"],
+    about: "Master's student in Cybersecurity at ISSAT Gafsa, passionate about information security, ethical hacking, and protecting digital assets. Looking for opportunities to apply my skills in real-world security projects.",
     experience: [
       {
-        title: "Web Development Intern",
-        company: "TechStart Inc.",
-        period: "Summer 2023",
-        description: "Developed and maintained features for the company's main web application using React and Node.js."
+        title: "Cybersecurity Intern",
+        company: "Tunisie Telecom",
+        period: "Summer 2024",
+        description: "Worked on vulnerability assessments and implemented security best practices for internal systems."
       }
     ],
     education: [
       {
-        degree: "Bachelor of Science in Computer Science",
-        institution: "State University",
-        period: "2020 - 2024",
-        gpa: "3.8/4.0"
+        degree: "Master's in Cybersecurity",
+        institution: "ISSAT Gafsa",
+        period: "2023 - 2025",
+        gpa: "16.2/20"
       }
     ]
   };

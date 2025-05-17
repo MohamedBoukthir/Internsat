@@ -120,38 +120,14 @@ const App = () => (
           />
 
           {/* Admin routes */}
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <ManageUsersPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/internships"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <ManageInternshipsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/companies"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <ManageCompaniesPage />
-              </ProtectedRoute>
-            }
-          />
+          {/* 
+            TEMPORARY DEV MODE BYPASS: 
+            In development, we're removing ProtectedRoute to easily access admin pages.
+        */}
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<ManageUsersPage />} />
+          <Route path="/admin/internships" element={<ManageInternshipsPage />} />
+          <Route path="/admin/companies" element={<ManageCompaniesPage />} />
 
           {/* Not Found page */}
           <Route path="/404" element={<NotFoundPage />} />

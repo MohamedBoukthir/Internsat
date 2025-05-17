@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
@@ -13,14 +12,16 @@ import { toast } from "@/components/ui/use-toast";
 const PostInternshipPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    title: "",
-    company: "YourCompany Inc.", // In a real app, this would come from the HR's company profile
-    location: "",
+    title: "Frontend Developer Intern",
+    company: "Vermeg",
+    location: "Tunis, Tunisia",
     type: "full-time",
-    duration: "",
-    description: "",
-    requirements: "",
-    stipend: "",
+    duration: "3 months",
+    description:
+      "Join Vermeg's frontend team to work on innovative financial software solutions. You will collaborate with experienced engineers, contribute to real projects, and learn best practices in React and TypeScript.",
+    requirements:
+      "• Currently studying Computer Science or related field\n• Knowledge of React and JavaScript/TypeScript\n• Familiarity with HTML/CSS\n• Good communication skills\n• Eagerness to learn",
+    stipend: "800 TND/month",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

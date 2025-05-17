@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,41 +23,41 @@ const ProfilePage = () => {
 
   // Mock HR data
   const hrData = {
-    name: "Jessica Parker",
-    email: "j.parker@techinnovate.com",
-    avatar: "/placeholder-avatar.jpg",
-    phone: "+1 (555) 987-6543",
-    location: "San Francisco, CA",
-    company: "Tech Innovate Inc.",
+    name: "Sana Ben Ahmed",
+    email: "sana.benahmed@vermeg.com",
+    avatar: "/vermeg-hr-avatar.jpg",
+    phone: "+216 71 123 456",
+    location: "Tunis, Tunisia",
+    company: "Vermeg",
     role: "HR Manager",
     department: "Human Resources",
-    joinDate: "March 2020",
+    joinDate: "January 2019",
     skills: ["Recruitment", "Employee Relations", "Talent Acquisition", "Onboarding", "HR Policy"],
-    about: "Experienced HR professional with a focus on tech recruitment and building diverse teams. Passionate about creating positive workplace cultures and connecting talented individuals with the right opportunities.",
+    about: "Experienced HR professional at Vermeg, passionate about building strong teams and supporting employee growth in the Tunisian tech sector.",
     experience: [
       {
         title: "HR Manager",
-        company: "Tech Innovate Inc.",
-        period: "2020 - Present",
-        description: "Lead recruitment efforts for engineering and product teams. Developed and implemented new onboarding processes that improved employee retention by 25%."
+        company: "Vermeg",
+        period: "2019 - Present",
+        description: "Leading recruitment and HR operations for Vermeg's Tunis office. Implemented new onboarding processes and employee engagement programs."
       },
       {
         title: "HR Specialist",
-        company: "FutureWorks Solutions",
-        period: "2017 - 2020",
-        description: "Managed full-cycle recruitment for technical roles. Organized company culture initiatives and employee engagement programs."
+        company: "Tunisie Telecom",
+        period: "2016 - 2019",
+        description: "Managed recruitment and employee relations for technical teams. Organized training and development workshops."
       }
     ],
     education: [
       {
         degree: "Master's in Human Resource Management",
-        institution: "West Coast University",
-        period: "2015 - 2017"
+        institution: "IHEC Carthage",
+        period: "2013 - 2015"
       },
       {
         degree: "Bachelor's in Business Administration",
-        institution: "State University",
-        period: "2011 - 2015"
+        institution: "ISG Tunis",
+        period: "2010 - 2013"
       }
     ]
   };

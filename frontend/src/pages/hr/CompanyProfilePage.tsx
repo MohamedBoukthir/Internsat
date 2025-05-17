@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,14 +10,15 @@ import { toast } from "@/components/ui/use-toast";
 
 const CompanyProfilePage = () => {
   const [formData, setFormData] = useState({
-    name: "TechCorp Inc.",
-    website: "https://techcorp.example.com",
-    location: "San Francisco, CA",
-    industry: "Technology",
-    size: "100-500",
-    founded: "2010",
-    about: "TechCorp is a leading technology company specializing in innovative software solutions for businesses of all sizes. Our mission is to simplify complex processes through intelligent software.",
-    logoUrl: "https://via.placeholder.com/150"
+    name: "Vermeg",
+    website: "https://www.vermeg.com",
+    location: "Tunis, Tunisia",
+    industry: "Financial Software",
+    size: "500-1000",
+    founded: "2002",
+    about:
+      "Vermeg is a leading Tunisian software company providing solutions for the financial services industry, including banking, insurance, and capital markets. With a global presence, Vermeg is recognized for its innovation and expertise.",
+    logoUrl: "https://media.licdn.com/dms/image/v2/D4E0BAQFPJ4arGSb5Tg/company-logo_200_200/company-logo_200_200/0/1696589536789/vermeg_logo?e=2147483647&v=beta&t=ay-XwJD7C1Wyd9M_mRJurYk6Lw3YPcZAx70l9G0vAbw"
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -1,4 +1,3 @@
-
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,23 +18,23 @@ const HRDashboard = () => {
   const recentApplicants = [
     { 
       id: 1, 
-      name: "Alex Johnson", 
-      position: "Frontend Developer", 
-      university: "MIT",
+      name: "Yasmine Ben Romdhane", 
+      position: "Frontend Developer Intern", 
+      university: "INSAT",
       status: "pending" 
     },
     { 
       id: 2, 
-      name: "Sarah Williams", 
-      position: "Data Analyst Intern", 
-      university: "Stanford",
+      name: "Oussama Trabelsi", 
+      position: "Security Analyst Intern", 
+      university: "ENSI",
       status: "approved" 
     },
     { 
       id: 3, 
-      name: "Michael Brown", 
-      position: "UX/UI Design Intern", 
-      university: "NYU",
+      name: "Amira Gharbi", 
+      position: "Data Analyst Intern", 
+      university: "FST Tunis",
       status: "rejected" 
     },
   ];
