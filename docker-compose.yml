@@ -10,6 +10,8 @@ services:
       - ./backend/.env
     environment:
       - FLASK_RUN_HOST=0.0.0.0
+    networks:
+      - internsat-network
 
   internsat-frontend:
     image: mohamedboukthir/internsat-frontend:latest
@@ -18,7 +20,9 @@ services:
       - ./frontend/.env.docker
     depends_on:
       - internsat-backend
-      
+    networks:
+      - internsat-network
+
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -30,3 +34,9 @@ services:
     depends_on:
       - internsat-frontend
     restart: unless-stopped
+    networks:
+      - internsat-network
+
+networks:
+  internsat-network:
+    driver: bridge
