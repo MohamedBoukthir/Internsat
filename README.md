@@ -10,7 +10,6 @@ Internsat is a web application designed to streamline internship management. It 
 - [Setup](#setup)
   - [Backend](#backend)
   - [Frontend](#frontend)
-  - [Using Docker](#using-docker)
 - [Alternative Editing Methods](#alternative-editing-methods)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -86,15 +85,6 @@ To install and run this project, ensure you have the following installed on your
     npm run dev
     ```
 
-### Using Docker
-
-If you prefer to use Docker to run the project, follow these steps:
-
-1. **Ensure Docker is Installed**
-Make sure Docker is installed on your system. You can download and install it from the [official Docker website](https://www.docker.com/get-started/).
-
-2. **Build and Run the Docker Containers:**
-Navigate to the root of the project and run the following command:
 
   ```bash
   docker-compose up --build
