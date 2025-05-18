@@ -20,7 +20,7 @@ cipher = Fernet(encryption_key.encode('utf-8'))
 auth_bp = Blueprint('auth', __name__)
 
 # Register route
-@auth_bp.route('/register', methods=['POST'])
+@auth_bp.route('/api/register', methods=['POST'])
 def register():
     data = request.json
     firstName = data.get('firstName')
@@ -71,7 +71,7 @@ def register():
 
 
 # Login route
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/api/login', methods=['POST'])
 def login():
     data = request.json
     email = data.get('email')
