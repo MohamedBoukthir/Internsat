@@ -70,4 +70,6 @@ htmlcov/
 .pytest_cache/
 
 # Environment variables
+.env.local
+.env.*.local
 dockerToken.txt
