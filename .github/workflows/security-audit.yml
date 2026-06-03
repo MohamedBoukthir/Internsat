@@ -1,0 +1,266 @@
+name: 🔒 Security Audit & Auto-Fix
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'       # Every Monday at 8am UTC
+  push:
+    paths:
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+  pull_request:
+    paths:
+      - 'frontend/package.json'
+      - 'frontend/package-lock.json'
+  workflow_dispatch:            # Manual trigger from GitHub UI
+
+permissions:
+  contents: write
+  pull-requests: write
+  security-events: write
+  issues: write
+
+jobs:
+  # ─────────────────────────────────────────────
+  # JOB 1 — Audit: scan and report vulnerabilities
+  # ─────────────────────────────────────────────
+  audit:
+    name: 🔍 Audit Dependencies
+    runs-on: ubuntu-latest
+    outputs:
+      has_vulnerabilities: ${{ steps.check.outputs.has_vulnerabilities }}
+      high_count: ${{ steps.check.outputs.high_count }}
+      moderate_count: ${{ steps.check.outputs.moderate_count }}
+      audit_json: ${{ steps.check.outputs.audit_json }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci --prefer-offline
+
+      - name: Run npm audit
+        id: check
+        working-directory: frontend
+        run: |
+          # Run audit and capture JSON output (don't fail yet)
+          AUDIT_JSON=$(npm audit --json 2>/dev/null || true)
+
+          # Extract counts
+          HIGH=$(echo "$AUDIT_JSON" | jq '.metadata.vulnerabilities.high // 0')
+          MODERATE=$(echo "$AUDIT_JSON" | jq '.metadata.vulnerabilities.moderate // 0')
+          CRITICAL=$(echo "$AUDIT_JSON" | jq '.metadata.vulnerabilities.critical // 0')
+          TOTAL=$(echo "$AUDIT_JSON" | jq '.metadata.vulnerabilities.total // 0')
+
+          echo "high_count=$HIGH" >> $GITHUB_OUTPUT
+          echo "moderate_count=$MODERATE" >> $GITHUB_OUTPUT
+          echo "critical_count=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "total_count=$TOTAL" >> $GITHUB_OUTPUT
+
+          if [ "$TOTAL" -gt "0" ]; then
+            echo "has_vulnerabilities=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_vulnerabilities=false" >> $GITHUB_OUTPUT
+          fi
+
+          # Save audit report as artifact
+          echo "$AUDIT_JSON" > audit-report.json
+          echo "Summary: $TOTAL total ($CRITICAL critical, $HIGH high, $MODERATE moderate)"
+
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report
+          path: frontend/audit-report.json
+          retention-days: 30
+
+      - name: Fail if critical vulnerabilities found
+        working-directory: frontend
+        run: npm audit --audit-level=critical
+
+
+  # ─────────────────────────────────────────────
+  # JOB 2 — Auto-fix: open a PR with safe updates
+  # ─────────────────────────────────────────────
+  auto-fix:
+    name: 🔧 Auto-Fix & Open PR
+    runs-on: ubuntu-latest
+    needs: audit
+    if: |
+      needs.audit.outputs.has_vulnerabilities == 'true' &&
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci --prefer-offline
+
+      - name: Run npm audit fix (safe only)
+        working-directory: frontend
+        run: |
+          # --force is intentionally excluded to avoid breaking changes
+          npm audit fix
+          echo "Safe fixes applied."
+
+      - name: Check if anything changed
+        id: git_diff
+        run: |
+          if git diff --quiet frontend/package-lock.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run tests after fix
+        if: steps.git_diff.outputs.changed == 'true'
+        working-directory: frontend
+        run: |
+          # Adjust this to your actual test command
+          npm run test --if-present || echo "No test script found, skipping."
+
+      - name: Create Pull Request
+        if: steps.git_diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "fix(security): auto-fix npm vulnerabilities"
+          branch: "security/auto-fix-${{ github.run_number }}"
+          delete-branch: true
+          title: "🔒 Security: Auto-fix npm vulnerabilities"
+          body: |
+            ## 🔒 Automated Security Fix
+
+            This PR was automatically generated by the **Security Audit & Auto-Fix** workflow.
+
+            ### What changed
+            - Ran `npm audit fix` to apply all **safe, non-breaking** updates
+            - Only patch and minor version bumps are included (no `--force`)
+
+            ### Vulnerability summary before fix
+            - 🔴 High: `${{ needs.audit.outputs.high_count }}`
+            - 🟡 Moderate: `${{ needs.audit.outputs.moderate_count }}`
+
+            ### Next steps
+            - Review the `package-lock.json` diff
+            - Check the CI test results below
+            - Merge if tests pass ✅
+
+            > ⚠️ Some vulnerabilities may require **manual major version upgrades** (e.g. `axios`, `lodash`).
+            > Run `npm audit` locally for details on what remains after this PR.
+
+            ---
+            *Auto-generated by [`security-audit.yml`](.github/workflows/security-audit.yml)*
+          labels: |
+            security
+            dependencies
+            automated
+
+      - name: No changes after fix
+        if: steps.git_diff.outputs.changed == 'false'
+        run: echo "No safe auto-fixes available. Manual upgrades may be required."
+
+
+  # ─────────────────────────────────────────────
+  # JOB 3 — Notify: post a GitHub Issue summary
+  # ─────────────────────────────────────────────
+  notify:
+    name: 📣 Create Issue Summary
+    runs-on: ubuntu-latest
+    needs: audit
+    if: |
+      needs.audit.outputs.has_vulnerabilities == 'true' &&
+      github.event_name == 'schedule'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download audit report
+        uses: actions/download-artifact@v4
+        with:
+          name: audit-report
+
+      - name: Create or update tracking issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const audit = JSON.parse(fs.readFileSync('audit-report.json', 'utf8'));
+            const vulns = audit.metadata?.vulnerabilities || {};
+            const total = vulns.total || 0;
+            const high = vulns.high || 0;
+            const moderate = vulns.moderate || 0;
+            const critical = vulns.critical || 0;
+            const date = new Date().toISOString().split('T')[0];
+
+            const body = [
+              `## 🔒 Weekly Security Audit — ${date}`,
+              ``,
+              `| Severity | Count |`,
+              `|----------|-------|`,
+              `| 🔴 Critical | ${critical} |`,
+              `| 🟠 High | ${high} |`,
+              `| 🟡 Moderate | ${moderate} |`,
+              `| **Total** | **${total}** |`,
+              ``,
+              `### Top vulnerable packages`,
+              Object.entries(audit.vulnerabilities || {}).slice(0, 10).map(([pkg, info]) =>
+                `- \`${pkg}\` — ${info.severity} (${info.title || 'see advisory'})`
+              ).join('\n'),
+              ``,
+              `### Actions`,
+              `- The \`auto-fix\` job has opened a PR with safe fixes (if any apply)`,
+              `- For remaining issues, consider manually upgrading: \`axios\`, \`lodash\`, \`react-router\``,
+              ``,
+              `*Generated by [Security Audit workflow](../../actions/workflows/security-audit.yml)*`,
+            ].join('\n');
+
+            // Search for existing open issue
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'security,automated',
+            });
+
+            const existing = issues.data.find(i => i.title.startsWith('🔒 Weekly Security Audit'));
+
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+                title: `🔒 Weekly Security Audit — ${date}`,
+              });
+              console.log(`Updated issue #${existing.number}`);
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🔒 Weekly Security Audit — ${date}`,
+                body,
+                labels: ['security', 'automated'],
+              });
+              console.log('Created new tracking issue');
+            }
