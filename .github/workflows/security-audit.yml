@@ -45,7 +45,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci --prefer-offline
+        run: npm ci --prefer-offline --legacy-peer-deps
 
       - name: Run npm audit
         id: check
@@ -113,7 +113,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci --prefer-offline
+        run: npm ci --prefer-offline --legacy-peer-deps
 
       - name: Run npm audit fix (safe only)
         working-directory: frontend
